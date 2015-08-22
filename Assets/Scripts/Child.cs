@@ -13,6 +13,7 @@ public class Child : MonoBehaviour
     private float _xValue;
     private float _zValue;
     public Pillow pillow;
+    public Transform target;
 
 
     void Awake()
@@ -23,8 +24,13 @@ public class Child : MonoBehaviour
     void Update()
     {
         _isGrounded = IsGrounded();
+        
+        // look at the target
+        if (target != null) {
+            transform.LookAt(target);
+        }
 
-        Debug.Log(_isGrounded);
+        //Debug.Log(_isGrounded);
     }
 
 
@@ -36,7 +42,7 @@ public class Child : MonoBehaviour
             
             // TODO: place the pillow correctly or animate or something...
 
-        Debug.Log(_isGrounded);
+        //Debug.Log(_isGrounded);
         }
     }
 
