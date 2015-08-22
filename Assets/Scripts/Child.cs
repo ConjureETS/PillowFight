@@ -81,17 +81,20 @@ public class Child : MonoBehaviour
             }
         }
         else
-        {
+        {                                                                                                                                                                                                                                                                                                                                   
             Vector3 forwardDir = Camera.main.transform.forward;
             Vector3 rightDir = Camera.main.transform.right;
 
-            forwardDir *= _zValue * Speed;
-            forwardDir.y = _rb.velocity.y;
+            forwardDir.y = 0f;
+            forwardDir = forwardDir.normalized * _zValue * Speed;
 
-            rightDir *= _xValue * Speed;
             rightDir.y = 0f;
+            rightDir = rightDir.normalized * _xValue * Speed;
 
-            _rb.velocity = forwardDir + rightDir;
+            Vector3 movement = forwardDir + rightDir;
+            movement.y = _rb.velocity.y;
+
+            _rb.velocity = movement;
         }
     }
 
@@ -225,6 +228,6 @@ public class Child : MonoBehaviour
 
     void OnDestroy()
     {
-        XInputDotNetPure.GamePad.SetVibration((XInputDotNetPure.PlayerIndex)_index, 0f, 0f);
+        ActivateVibration(false);
     }
 }
