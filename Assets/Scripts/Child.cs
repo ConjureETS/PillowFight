@@ -2,21 +2,26 @@
 using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
-public class Child : MonoBehaviour 
+public class Child : MonoBehaviour
 {
     public float Speed = 10f;
     public float JumpForce = 10f;
+    public float MaxInvulnerableTime = 2f;
     public GameObject GroundCheck;
     public Pillow pillow;
+    public MomBehavior Mom;
 
     private Rigidbody _rb;
     private bool _isGrounded = false;
     private float _xValue;
     private float _zValue;
     private bool _isSleeping;
+    private float _invulnerableTime;
+    private Bed _currentBed;
     public Transform target;
 
     private int _index;
+    private bool _isPushed = false;
 
     public int Index
     {
@@ -38,7 +43,14 @@ public class Child : MonoBehaviour
     void Update()
     {
         _isGrounded = IsGrounded();
-        
+
+        if (Mom.IsInRoom && !_isSleeping)
+        {
+            // TODO: Remove a life, kill the player, end the game, etc.
+
+            Debug.Log("Player " + _index + " is being spotted by mom.");
+        }
+
         // look at the target
         if (target != null) {
             transform.LookAt(target);
@@ -61,16 +73,29 @@ public class Child : MonoBehaviour
     {
         // We move the child depending on the camera orientation
 
-        Vector3 forwardDir = Camera.main.transform.forward;
-        Vector3 rightDir = Camera.main.transform.right;
+        if (_isPushed)
+        {
+            if (_rb.velocity == Vector3.zero)
+            {
+                _isPushed = false;
+            }
+        }
+        else
+        {                                                                                                                                                                                                                                                                                                                                   
+            Vector3 forwardDir = Camera.main.transform.forward;
+            Vector3 rightDir = Camera.main.transform.right;
 
-        forwardDir *= _zValue * Speed;
-        forwardDir.y = _rb.velocity.y;
+            forwardDir.y = 0f;
+            forwardDir = forwardDir.normalized * _zValue * Speed;
 
-        rightDir *= _xValue * Speed;
-        rightDir.y = 0f;
+            rightDir.y = 0f;
+            rightDir = rightDir.normalized * _xValue * Speed;
 
-        _rb.velocity = forwardDir + rightDir;
+            Vector3 movement = forwardDir + rightDir;
+            movement.y = _rb.velocity.y;
+
+            _rb.velocity = movement;
+        }
     }
 
     private bool IsGrounded()
@@ -100,11 +125,15 @@ public class Child : MonoBehaviour
 
     public bool Sleep()
     {
-        _isSleeping = IsOnBed();
+        Bed bed = GetBed();
 
-        // Temporary (only for visual cue until we get the animation)
-        if (_isSleeping)
+        if (bed != null && !bed.IsTaken)
         {
+            _currentBed = bed;
+            bed.Take();
+            _isSleeping = true;
+
+            // Temporary (only for visual cue until we get the animation)
             transform.localEulerAngles = new Vector3(90f, transform.localEulerAngles.y, transform.localEulerAngles.z);
         }
 
@@ -115,14 +144,90 @@ public class Child : MonoBehaviour
     {
         _isSleeping = false;
 
+        _currentBed.Leave();
+
+        _currentBed = null;
+
         // Temporary (only for visual cue until we get the animation)
         transform.localEulerAngles = new Vector3(0f, transform.localEulerAngles.y, transform.localEulerAngles.z);
     }
 
-    private bool IsOnBed()
+    private Bed GetBed()
     {
         Collider[] colliders = Physics.OverlapSphere(GroundCheck.transform.position, 0.149f, 1 << LayerMask.NameToLayer("Bed"));
 
-        return colliders.Length > 0;
+        return colliders.Length > 0 ? colliders[0].GetComponent<Bed>() : null;
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Lava")
+        {
+            Debug.Log("Player " + _index + " entered lava. Lose one life.");
+            TakeLavaDamage();
+            ActivateVibration(true);
+        }
+        else
+        {
+            // Setup for the next time the player falls on the lava
+            _invulnerableTime = MaxInvulnerableTime;
+
+            if (collision.gameObject.tag == "Floor")
+            {
+                ActivateVibration(false);
+            }
+        }
+    }
+
+    void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.tag == "Lava" || collision.gameObject.tag == "Floor")
+        {
+            ActivateVibration(false);
+        }
+    }
+
+    void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.tag == "Lava")
+        {
+            _invulnerableTime += Time.deltaTime;
+
+            if (_invulnerableTime >= MaxInvulnerableTime)
+            {
+                Debug.Log("Player " + _index + " is still standing on lava. Lose one life.");
+                TakeLavaDamage();
+            }
+
+            ActivateVibration(true);
+        }
+        else if (collision.gameObject.tag == "Floor")
+        {
+            ActivateVibration(false);
+        }
+    }
+
+    public void Push(Vector3 force)
+    {
+        _isPushed = true;
+        _rb.AddForce(force);
+    }
+
+    private void ActivateVibration(bool activate)
+    {
+        float intensity = activate ? 0.3f : 0f;
+
+        XInputDotNetPure.GamePad.SetVibration((XInputDotNetPure.PlayerIndex)_index, intensity, intensity);
+    }
+
+    private void TakeLavaDamage()
+    {
+        // TODO: Lose a life (probably) and become immune for ~ 2 or 3 seconds
+        _invulnerableTime = 0f;
+    }
+
+    void OnDestroy()
+    {
+        ActivateVibration(false);
     }
 }

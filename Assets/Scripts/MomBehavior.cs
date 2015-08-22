@@ -1,24 +1,37 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System.Collections.Generic;
+using System;
 
 public class MomBehavior : MonoBehaviour
 {
-    public Child[] Children;
+    public Action OnWarning;
+    public Action OnEnterRoom;
+    public Action OnLeaveRoom;
 
     public Text WarningText;
     public float MinTriggerTime = 60f;
     public float MaxTriggerTime = 90f;
     public float WarningHeadsupTime = 5f;
+    public float MotherStayTime = 2f;
+
+    public Child[] Children;
 
     private float _elapsedTime = 0f;
 
     private float _nextTriggerTime;
 
+    private bool _isInRoom;
+
+    public bool IsInRoom
+    {
+        get { return _isInRoom; }
+    }
+
     void Awake()
     {
         _nextTriggerTime = GetNextTriggerTime();
-        Debug.Log("NextTrigger: " + _nextTriggerTime);
     }
 
     void Update()
@@ -30,23 +43,58 @@ public class MomBehavior : MonoBehaviour
         if (_elapsedTime >= _nextTriggerTime - WarningHeadsupTime && _elapsedTime < _nextTriggerTime)
         {
             WarningText.gameObject.SetActive(true);
+
+            if (OnWarning != null)
+            {
+                OnWarning();
+            }
         }
         else if (_elapsedTime >= _nextTriggerTime)
         {
             WarningText.gameObject.SetActive(false);
             _nextTriggerTime = GetNextTriggerTime();
 
+            _elapsedTime = 0f;
+
+            StartCoroutine(StayInRoom());
+        }
+
+        if (_isInRoom)
+        {
+            List<Child> spottedChildren = new List<Child>();
+            List<Child> safeChildren = new List<Child>();
+
             foreach (Child child in Children)
             {
                 if (!child.IsSleeping)
                 {
-                    // TODO: Do something (end the game? kill the player? make him lose 1 life? etc.)
-
-                    Debug.Log("Child " + child.Index + " got found by Mommy.");
+                    spottedChildren.Add(child);
                 }
             }
 
-            _elapsedTime = 0f;
+            if (spottedChildren.Count > 0)
+            {
+                // TODO: Show a message mentionning the "dead" children
+            }
+        }
+    }
+
+    private IEnumerator StayInRoom()
+    {
+        if (OnEnterRoom != null)
+        {
+            OnEnterRoom();
+        }
+
+        _isInRoom = true;
+
+        yield return new WaitForSeconds(MotherStayTime);
+
+        _isInRoom = false;
+
+        if (OnLeaveRoom != null)
+        {
+            OnLeaveRoom();
         }
     }
 
