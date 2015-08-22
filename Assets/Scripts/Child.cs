@@ -2,12 +2,13 @@
 using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
-public class Child : MonoBehaviour 
+public class Child : MonoBehaviour
 {
     public float Speed = 10f;
     public float JumpForce = 10f;
     public GameObject GroundCheck;
     public Pillow pillow;
+    public MomBehavior Mom;
 
     private Rigidbody _rb;
     private bool _isGrounded = false;
@@ -37,6 +38,13 @@ public class Child : MonoBehaviour
     void Update()
     {
         _isGrounded = IsGrounded();
+
+        if (Mom.IsInRoom && !_isSleeping)
+        {
+            // TODO: Remove a life, kill the player, end the game, etc.
+
+            Debug.Log("Player " + _index + " is being spotted by mom.");
+        }
     }
 
     void OnTriggerEnter(Collider other) {
