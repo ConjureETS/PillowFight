@@ -36,6 +36,16 @@ public class MomBehavior : MonoBehaviour
             WarningText.gameObject.SetActive(false);
             _nextTriggerTime = GetNextTriggerTime();
 
+            foreach (Child child in Children)
+            {
+                if (!child.IsSleeping)
+                {
+                    // TODO: Do something (end the game? kill the player? make him lose 1 life? etc.)
+
+                    Debug.Log("Child " + child.Index + " got found by Mommy.");
+                }
+            }
+
             _elapsedTime = 0f;
         }
     }

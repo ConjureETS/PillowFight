@@ -15,6 +15,15 @@ public class Child : MonoBehaviour
     private float _zValue;
     private bool _isSleeping;
 
+    private int _index;
+
+    public int Index
+    {
+        get { return _index; }
+        set { _index = value; }
+    }
+    
+
     public bool IsSleeping
     {
         get { return _isSleeping; }
@@ -28,8 +37,6 @@ public class Child : MonoBehaviour
     void Update()
     {
         _isGrounded = IsGrounded();
-
-        Debug.Log(_isGrounded);
     }
 
     void OnTriggerEnter(Collider other) {

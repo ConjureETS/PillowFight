@@ -18,6 +18,7 @@ public class ChildController : MonoBehaviour
         InputManager.Instance.AddCallback((int)PlayerNumber, HandlePlayerButtons);
 
         _child = GetComponent<Child>();
+        _child.Index = (int)PlayerNumber;
     }
 
     private void HandlePlayerAxis(MappedInput input)
