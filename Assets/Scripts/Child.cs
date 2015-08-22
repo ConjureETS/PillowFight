@@ -15,6 +15,7 @@ public class Child : MonoBehaviour
     private float _xValue;
     private float _zValue;
     private bool _isSleeping;
+    public Transform target;
 
     private int _index;
 
@@ -45,6 +46,11 @@ public class Child : MonoBehaviour
 
             Debug.Log("Player " + _index + " is being spotted by mom.");
         }
+
+        // look at the target
+        if (target != null) {
+            transform.LookAt(target);
+        }
     }
 
     void OnTriggerEnter(Collider other) {
@@ -55,7 +61,7 @@ public class Child : MonoBehaviour
             
             // TODO: place the pillow correctly or animate or something...
 
-        Debug.Log(_isGrounded);
+        //Debug.Log(_isGrounded);
         }
     }
 
