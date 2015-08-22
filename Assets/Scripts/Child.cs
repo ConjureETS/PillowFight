@@ -44,12 +44,12 @@ public class Child : MonoBehaviour
     {
         _isGrounded = IsGrounded();
 
-        if (Mom.IsInRoom && !_isSleeping)
+        /*if (Mom.IsInRoom && !_isSleeping)
         {
             // TODO: Remove a life, kill the player, end the game, etc.
 
             Debug.Log("Player " + _index + " is being spotted by mom.");
-        }
+        }*/
 
         // look at the target
         if (target != null) {

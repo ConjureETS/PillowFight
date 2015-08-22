@@ -24,27 +24,52 @@ public class AutoTarget : MonoBehaviour {
 
 	}
 
+	public Transform GetTarget(float screenX, float screenZ)
+	{
+		//Translate into looking angles
+		
+		Vector3 forwardDir = Camera.main.transform.forward;
+		Vector3 rightDir = Camera.main.transform.right;
+
+		forwardDir.y = 0f;
+		forwardDir = forwardDir.normalized * screenZ;
+
+		rightDir.y = 0f;
+		rightDir = rightDir.normalized * screenX;
+
+		Vector3 movement = forwardDir + rightDir;
+
+		return GetTarget(movement);
+	}
+	
     public Transform GetTarget(Vector3 lookingAngle) {
+		
         Transform closest = null;
         float minAngle = minAngleRange;
 
-        Debug.Log("looking direction:" + lookingAngle);
+        //Debug.Log("looking direction:" + lookingAngle);
+		Debug.DrawRay(transform.position, lookingAngle * 2);
 
 
         foreach (Transform t in targets) {
+
             Vector3 targetDirection = t.transform.position - transform.position;
             
             float realAngle = Mathf.Atan2(targetDirection.z, targetDirection.x) * Mathf.Rad2Deg;
-            Debug.Log("real angle:" + realAngle);
+            //Debug.Log("real angle:" + realAngle);
             
             float lookAngle = Mathf.Atan2(lookingAngle.z, lookingAngle.x) * Mathf.Rad2Deg;
             Debug.Log("look angle:" + lookAngle);
 
+			float angle = (lookAngle - realAngle + 5*360) % 360;
+			//float angle = lookAngle - realAngle;
 
-            if (Mathf.Abs(lookAngle - realAngle) < minAngle) {
+
+            if (Mathf.Abs(angle) < minAngle) {
                 minAngle = lookAngle;
                 closest = t;
-            }    
+				Debug.DrawRay(transform.position, t.transform.position - transform.position, Color.blue);
+            }
         }
 
         return closest;
