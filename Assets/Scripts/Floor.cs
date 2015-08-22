@@ -20,11 +20,13 @@ public class Floor : MonoBehaviour
     private void ChangeToNormalFloor()
     {
         _renderer.material = NormalMaterial;
+        gameObject.tag = "Floor"; // Might not be necessary since the player is most likely "dead" if he touches a non-lava floor
     }
 
     private void ChangeToLavaFloor()
     {
         _renderer.material = LavaMaterial;
+        gameObject.tag = "Lava"; // Might not be necessary since the player is most likely "dead" if he touches a non-lava floor
     }
 
     void OnDestroy()

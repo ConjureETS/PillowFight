@@ -133,4 +133,13 @@ public class Child : MonoBehaviour
 
         return colliders.Length > 0;
     }
+
+    void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.tag == "Lava")
+        {
+            // TODO: Lose a life (probably) and become immune for ~ 2 or 3 seconds
+            Debug.Log("Player " + _index + " is standing on lava.");
+        }
+    }
 }
