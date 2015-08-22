@@ -3,6 +3,8 @@ using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System;
+using MenusHandler;
+using InputHandler;
 
 public class MomBehavior : MonoBehaviour
 {
@@ -24,6 +26,8 @@ public class MomBehavior : MonoBehaviour
 
     private bool _isInRoom;
 
+    private bool _gameOver = false;
+
     public bool IsInRoom
     {
         get { return _isInRoom; }
@@ -36,6 +40,8 @@ public class MomBehavior : MonoBehaviour
 
     void Update()
     {
+        if (_gameOver) return;
+
         // When the mom hasn't been triggered for a while, it can appear anytime between 2 borders
 
         _elapsedTime += Time.deltaTime;
@@ -61,20 +67,42 @@ public class MomBehavior : MonoBehaviour
 
         if (_isInRoom)
         {
-            List<Child> spottedChildren = new List<Child>();
             List<Child> safeChildren = new List<Child>();
 
             foreach (Child child in Children)
             {
-                if (!child.IsSleeping)
+                if (child == null) continue;
+
+                if (child.IsSleeping)
                 {
-                    spottedChildren.Add(child);
+                    safeChildren.Add(child);
+                }
+                else
+                {
+                    Debug.Log("Player " + child.Index + " has been spotted by mom.");
+
+                    // TODO: Visual animation that the player lost (lasso?)
+
+                    Destroy(child.gameObject);
                 }
             }
 
-            if (spottedChildren.Count > 0)
+            if (safeChildren.Count == 0)
             {
-                // TODO: Show a message mentionning the "dead" children
+                Debug.Log("Mom wins!");
+
+                MenusManager.Instance.ShowMenu("MomWinsMenu");
+
+                _gameOver = true;
+            }
+            else if (safeChildren.Count == 1)
+            {
+                Debug.Log("Player " + safeChildren[0].Index + " wins!");
+
+                PlayerWinsMenu menu = (PlayerWinsMenu)MenusManager.Instance.ShowMenu("PlayerWinsMenu");
+                menu.SetPlayerIndex(safeChildren[0].Index);
+
+                _gameOver = true;
             }
         }
     }
