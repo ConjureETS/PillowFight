@@ -83,9 +83,16 @@ public class Child : MonoBehaviour
         }
     }
 
-    public void Sleep()
+    public bool Sleep()
     {
         _isSleeping = IsOnBed();
+
+        return _isSleeping;
+    }
+
+    public void WakeUp()
+    {
+        _isSleeping = false;
     }
 
     private bool IsOnBed()

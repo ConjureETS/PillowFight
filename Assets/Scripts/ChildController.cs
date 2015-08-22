@@ -58,9 +58,14 @@ public class ChildController : MonoBehaviour
             _child.Jump();
         }
 
-        if (input.Actions.Contains("Sleep"))
+        if (input.Actions.Contains("Sleep") && _child.Sleep())
         {
-            _child.Sleep();
+            InputManager.Instance.PushActiveContext("Sleeping", (int)PlayerNumber);
+        }
+        else if (input.Actions.Contains("WakeUp"))
+        {
+            _child.WakeUp();
+            InputManager.Instance.PushActiveContext("Awake", (int)PlayerNumber);
         }
     }
 
