@@ -15,12 +15,13 @@ public class ChildController : MonoBehaviour
 
     void Awake()
     {
-        InputManager.Instance.PushActiveContext("Gameplay", (int)PlayerNumber);
+        InputManager.Instance.PushActiveContext("Awake", (int)PlayerNumber);
         InputManager.Instance.AddCallback((int)PlayerNumber, HandlePlayerAxis);
         InputManager.Instance.AddCallback((int)PlayerNumber, HandlePlayerButtons);
 
         _child = GetComponent<Child>();
         _autoTarget = GetComponent<AutoTarget>();
+        _child.Index = (int)PlayerNumber;
     }
 
     private void HandlePlayerAxis(MappedInput input)
@@ -87,6 +88,18 @@ public class ChildController : MonoBehaviour
         if (input.Actions.Contains("Jump"))
         {
             _child.Jump();
+        }
+
+        if (input.Actions.Contains("Sleep") && _child.Sleep())
+        {
+            Debug.Log("SLEEPING");
+            InputManager.Instance.PushActiveContext("Sleeping", (int)PlayerNumber);
+        }
+        else if (input.Actions.Contains("WakeUp"))
+        {
+            Debug.Log("AWAKE");
+            _child.WakeUp();
+            InputManager.Instance.PushActiveContext("Awake", (int)PlayerNumber);
         }
     }
 

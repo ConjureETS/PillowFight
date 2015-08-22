@@ -7,14 +7,28 @@ public class Child : MonoBehaviour
     public float Speed = 10f;
     public float JumpForce = 10f;
     public GameObject GroundCheck;
+    public Pillow pillow;
 
     private Rigidbody _rb;
     private bool _isGrounded = false;
     private float _xValue;
     private float _zValue;
-    public Pillow pillow;
+    private bool _isSleeping;
     public Transform target;
 
+    private int _index;
+
+    public int Index
+    {
+        get { return _index; }
+        set { _index = value; }
+    }
+    
+
+    public bool IsSleeping
+    {
+        get { return _isSleeping; }
+    }
 
     void Awake()
     {
@@ -29,10 +43,7 @@ public class Child : MonoBehaviour
         if (target != null) {
             transform.LookAt(target);
         }
-
-        //Debug.Log(_isGrounded);
     }
-
 
     void OnTriggerEnter(Collider other) {
         if (other.tag == "Pillow") {
@@ -64,7 +75,9 @@ public class Child : MonoBehaviour
 
     private bool IsGrounded()
     {
-        Collider[] colliders = Physics.OverlapSphere(GroundCheck.transform.position, 0.149f, 1 << LayerMask.NameToLayer("Ground"));
+        int mask = (1 << LayerMask.NameToLayer("Ground")) | (1 << LayerMask.NameToLayer("Bed"));
+
+        Collider[] colliders = Physics.OverlapSphere(GroundCheck.transform.position, 0.149f, mask);
 
         return colliders.Length > 0;
     }
@@ -83,5 +96,33 @@ public class Child : MonoBehaviour
 
             _rb.AddForce(new Vector3(0f, JumpForce, 0f));
         }
+    }
+
+    public bool Sleep()
+    {
+        _isSleeping = IsOnBed();
+
+        // Temporary (only for visual cue until we get the animation)
+        if (_isSleeping)
+        {
+            transform.localEulerAngles = new Vector3(90f, transform.localEulerAngles.y, transform.localEulerAngles.z);
+        }
+
+        return _isSleeping;
+    }
+
+    public void WakeUp()
+    {
+        _isSleeping = false;
+
+        // Temporary (only for visual cue until we get the animation)
+        transform.localEulerAngles = new Vector3(0f, transform.localEulerAngles.y, transform.localEulerAngles.z);
+    }
+
+    private bool IsOnBed()
+    {
+        Collider[] colliders = Physics.OverlapSphere(GroundCheck.transform.position, 0.149f, 1 << LayerMask.NameToLayer("Bed"));
+
+        return colliders.Length > 0;
     }
 }
