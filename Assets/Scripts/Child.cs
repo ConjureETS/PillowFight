@@ -62,7 +62,9 @@ public class Child : MonoBehaviour
 
     private bool IsGrounded()
     {
-        Collider[] colliders = Physics.OverlapSphere(GroundCheck.transform.position, 0.149f, 1 << LayerMask.NameToLayer("Ground"));
+        int mask = (1 << LayerMask.NameToLayer("Ground")) | (1 << LayerMask.NameToLayer("Bed"));
+
+        Collider[] colliders = Physics.OverlapSphere(GroundCheck.transform.position, 0.149f, mask);
 
         return colliders.Length > 0;
     }
@@ -87,12 +89,21 @@ public class Child : MonoBehaviour
     {
         _isSleeping = IsOnBed();
 
+        // Temporary (only for visual cue until we get the animation)
+        if (_isSleeping)
+        {
+            transform.localEulerAngles = new Vector3(90f, transform.localEulerAngles.y, transform.localEulerAngles.z);
+        }
+
         return _isSleeping;
     }
 
     public void WakeUp()
     {
         _isSleeping = false;
+
+        // Temporary (only for visual cue until we get the animation)
+        transform.localEulerAngles = new Vector3(0f, transform.localEulerAngles.y, transform.localEulerAngles.z);
     }
 
     private bool IsOnBed()
