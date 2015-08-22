@@ -13,7 +13,7 @@ public class ChildController : MonoBehaviour
 
     void Awake()
     {
-        InputManager.Instance.PushActiveContext("Gameplay", (int)PlayerNumber);
+        InputManager.Instance.PushActiveContext("Awake", (int)PlayerNumber);
         InputManager.Instance.AddCallback((int)PlayerNumber, HandlePlayerAxis);
         InputManager.Instance.AddCallback((int)PlayerNumber, HandlePlayerButtons);
 
@@ -56,6 +56,11 @@ public class ChildController : MonoBehaviour
         if (input.Actions.Contains("Jump"))
         {
             _child.Jump();
+        }
+
+        if (input.Actions.Contains("Sleep"))
+        {
+            _child.Sleep();
         }
     }
 

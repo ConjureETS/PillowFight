@@ -7,13 +7,18 @@ public class Child : MonoBehaviour
     public float Speed = 10f;
     public float JumpForce = 10f;
     public GameObject GroundCheck;
+    public Pillow pillow;
 
     private Rigidbody _rb;
     private bool _isGrounded = false;
     private float _xValue;
     private float _zValue;
-    public Pillow pillow;
+    private bool _isSleeping;
 
+    public bool IsSleeping
+    {
+        get { return _isSleeping; }
+    }
 
     void Awake()
     {
@@ -26,7 +31,6 @@ public class Child : MonoBehaviour
 
         Debug.Log(_isGrounded);
     }
-
 
     void OnTriggerEnter(Collider other) {
         if (other.tag == "Pillow") {
@@ -77,5 +81,17 @@ public class Child : MonoBehaviour
 
             _rb.AddForce(new Vector3(0f, JumpForce, 0f));
         }
+    }
+
+    public void Sleep()
+    {
+        _isSleeping = IsOnBed();
+    }
+
+    private bool IsOnBed()
+    {
+        Collider[] colliders = Physics.OverlapSphere(GroundCheck.transform.position, 0.149f, 1 << LayerMask.NameToLayer("Bed"));
+
+        return colliders.Length > 0;
     }
 }
