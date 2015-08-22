@@ -75,9 +75,19 @@ public class ChildController : MonoBehaviour
         }
 
         if (xLookingValue != 0 || zLookingValue != 0) {
-            //transform.rotation = new Quaternion(0, 1, 0, Mathf.Atan2(zLookingValue, xLookingValue));
-            transform.eulerAngles = new Vector3(transform.eulerAngles.x, Mathf.Atan2(xLookingValue, zLookingValue) * Mathf.Rad2Deg, transform.eulerAngles.z);
-            _child.target = _autoTarget.GetTarget(new Vector3(xLookingValue, 0, zLookingValue));
+            Transform target = _autoTarget.GetTarget(new Vector3(xLookingValue, 0, zLookingValue));
+            
+            _child.target = target;
+            if (_child.target != null) {
+                transform.LookAt(_child.target);
+            }
+            else {
+                transform.eulerAngles = new Vector3(
+                    transform.eulerAngles.x, 
+                    Mathf.Atan2(xLookingValue, zLookingValue) * Mathf.Rad2Deg, 
+                    transform.eulerAngles.z);
+            }
+            
         }
     }
 

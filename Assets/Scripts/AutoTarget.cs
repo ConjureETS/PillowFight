@@ -25,22 +25,28 @@ public class AutoTarget : MonoBehaviour {
 	}
 
     public Transform GetTarget(Vector3 lookingAngle) {
-
         Transform closest = null;
         float minAngle = minAngleRange;
 
+        Debug.Log("looking direction:" + lookingAngle);
+
+
         foreach (Transform t in targets) {
             Vector3 targetDirection = t.transform.position - transform.position;
+            
+            float realAngle = Mathf.Atan2(targetDirection.z, targetDirection.x) * Mathf.Rad2Deg;
+            Debug.Log("real angle:" + realAngle);
+            
+            float lookAngle = Mathf.Atan2(lookingAngle.z, lookingAngle.x) * Mathf.Rad2Deg;
+            Debug.Log("look angle:" + lookAngle);
 
-            float dot = Vector3.Dot(targetDirection, lookingAngle);
-            float angle = Mathf.Acos(dot) * Mathf.Rad2Deg;
 
-            if (angle < minAngle) {
-                minAngle = angle;
+            if (Mathf.Abs(lookAngle - realAngle) < minAngle) {
+                minAngle = lookAngle;
                 closest = t;
             }    
         }
-        
+
         return closest;
     }
 
