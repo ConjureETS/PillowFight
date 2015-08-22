@@ -12,6 +12,8 @@ public class Child : MonoBehaviour
     private bool _isGrounded = false;
     private float _xValue;
     private float _zValue;
+    public Pillow pillow;
+
 
     void Awake()
     {
@@ -23,6 +25,19 @@ public class Child : MonoBehaviour
         _isGrounded = IsGrounded();
 
         Debug.Log(_isGrounded);
+    }
+
+
+    void OnTriggerEnter(Collider other) {
+        if (other.tag == "Pillow") {
+            
+            pillow = other.GetComponent<Pillow>();
+            other.transform.parent = transform; // make the pillow a child of Child
+            
+            // TODO: place the pillow correctly or animate or something...
+
+        Debug.Log(_isGrounded);
+        }
     }
 
     void FixedUpdate()
