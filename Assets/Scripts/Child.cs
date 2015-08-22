@@ -58,7 +58,7 @@ public class Child : MonoBehaviour
 
     private bool IsGrounded()
     {
-        Collider[] colliders = Physics.OverlapSphere(GroundCheck.transform.position, 0.5f, 1 << LayerMask.NameToLayer("Ground"));
+        Collider[] colliders = Physics.OverlapSphere(GroundCheck.transform.position, 0.149f, 1 << LayerMask.NameToLayer("Ground"));
 
         return colliders.Length > 0;
     }
