@@ -16,6 +16,8 @@ public class MomBehavior : MonoBehaviour
     public float WarningHeadsupTime = 5f;
     public float MotherStayTime = 2f;
 
+    public Child[] Children;
+
     private float _elapsedTime = 0f;
 
     private float _nextTriggerTime;
@@ -55,6 +57,25 @@ public class MomBehavior : MonoBehaviour
             _elapsedTime = 0f;
 
             StartCoroutine(StayInRoom());
+        }
+
+        if (_isInRoom)
+        {
+            List<Child> spottedChildren = new List<Child>();
+            List<Child> safeChildren = new List<Child>();
+
+            foreach (Child child in Children)
+            {
+                if (!child.IsSleeping)
+                {
+                    spottedChildren.Add(child);
+                }
+            }
+
+            if (spottedChildren.Count > 0)
+            {
+                // TODO: Show a message mentionning the "dead" children
+            }
         }
     }
 

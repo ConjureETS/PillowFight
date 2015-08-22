@@ -81,17 +81,20 @@ public class Child : MonoBehaviour
             }
         }
         else
-        {
+        {                                                                                                                                                                                                                                                                                                                                   
             Vector3 forwardDir = Camera.main.transform.forward;
             Vector3 rightDir = Camera.main.transform.right;
 
-            forwardDir *= _zValue * Speed;
-            forwardDir.y = _rb.velocity.y;
+            forwardDir.y = 0f;
+            forwardDir = forwardDir.normalized * _zValue * Speed;
 
-            rightDir *= _xValue * Speed;
             rightDir.y = 0f;
+            rightDir = rightDir.normalized * _xValue * Speed;
 
-            _rb.velocity = forwardDir + rightDir;
+            Vector3 movement = forwardDir + rightDir;
+            movement.y = _rb.velocity.y;
+
+            _rb.velocity = movement;
         }
     }
 
@@ -162,6 +165,25 @@ public class Child : MonoBehaviour
         {
             Debug.Log("Player " + _index + " entered lava. Lose one life.");
             TakeLavaDamage();
+            ActivateVibration(true);
+        }
+        else
+        {
+            // Setup for the next time the player falls on the lava
+            _invulnerableTime = MaxInvulnerableTime;
+
+            if (collision.gameObject.tag == "Floor")
+            {
+                ActivateVibration(false);
+            }
+        }
+    }
+
+    void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.tag == "Lava" || collision.gameObject.tag == "Floor")
+        {
+            ActivateVibration(false);
         }
     }
 
@@ -176,6 +198,12 @@ public class Child : MonoBehaviour
                 Debug.Log("Player " + _index + " is still standing on lava. Lose one life.");
                 TakeLavaDamage();
             }
+
+            ActivateVibration(true);
+        }
+        else if (collision.gameObject.tag == "Floor")
+        {
+            ActivateVibration(false);
         }
     }
 
@@ -185,10 +213,21 @@ public class Child : MonoBehaviour
         _rb.AddForce(force);
     }
 
+    private void ActivateVibration(bool activate)
+    {
+        float intensity = activate ? 0.3f : 0f;
+
+        XInputDotNetPure.GamePad.SetVibration((XInputDotNetPure.PlayerIndex)_index, intensity, intensity);
+    }
+
     private void TakeLavaDamage()
     {
         // TODO: Lose a life (probably) and become immune for ~ 2 or 3 seconds
-
         _invulnerableTime = 0f;
+    }
+
+    void OnDestroy()
+    {
+        ActivateVibration(false);
     }
 }
