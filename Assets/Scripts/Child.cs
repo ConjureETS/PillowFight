@@ -21,6 +21,7 @@ public class Child : MonoBehaviour
     public Transform target;
 
     private int _index;
+    private bool _isPushed = false;
 
     public int Index
     {
@@ -72,16 +73,26 @@ public class Child : MonoBehaviour
     {
         // We move the child depending on the camera orientation
 
-        Vector3 forwardDir = Camera.main.transform.forward;
-        Vector3 rightDir = Camera.main.transform.right;
+        if (_isPushed)
+        {
+            if (_rb.velocity == Vector3.zero)
+            {
+                _isPushed = false;
+            }
+        }
+        else
+        {
+            Vector3 forwardDir = Camera.main.transform.forward;
+            Vector3 rightDir = Camera.main.transform.right;
 
-        forwardDir *= _zValue * Speed;
-        forwardDir.y = _rb.velocity.y;
+            forwardDir *= _zValue * Speed;
+            forwardDir.y = _rb.velocity.y;
 
-        rightDir *= _xValue * Speed;
-        rightDir.y = 0f;
+            rightDir *= _xValue * Speed;
+            rightDir.y = 0f;
 
-        _rb.velocity = forwardDir + rightDir;
+            _rb.velocity = forwardDir + rightDir;
+        }
     }
 
     private bool IsGrounded()
@@ -166,6 +177,12 @@ public class Child : MonoBehaviour
                 TakeLavaDamage();
             }
         }
+    }
+
+    public void Push(Vector3 force)
+    {
+        _isPushed = true;
+        _rb.AddForce(force);
     }
 
     private void TakeLavaDamage()
