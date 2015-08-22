@@ -14,12 +14,13 @@ public class ChildController : MonoBehaviour
     void Awake()
     {
         InputManager.Instance.PushActiveContext("Gameplay", (int)PlayerNumber);
-        InputManager.Instance.AddCallback((int)PlayerNumber, HandlePlayerInput);
+        InputManager.Instance.AddCallback((int)PlayerNumber, HandlePlayerAxis);
+        InputManager.Instance.AddCallback((int)PlayerNumber, HandlePlayerButtons);
 
         _child = GetComponent<Child>();
     }
 
-    private void HandlePlayerInput(MappedInput input)
+    private void HandlePlayerAxis(MappedInput input)
     {
         if (this == null) return;
 
@@ -46,6 +47,16 @@ public class ChildController : MonoBehaviour
         }
 
         _child.Move(xValue, zValue);
+    }
+
+    private void HandlePlayerButtons(MappedInput input)
+    {
+        if (this == null) return;
+
+        if (input.Actions.Contains("Jump"))
+        {
+            _child.Jump();
+        }
     }
 
 }
