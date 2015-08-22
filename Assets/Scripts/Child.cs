@@ -162,6 +162,25 @@ public class Child : MonoBehaviour
         {
             Debug.Log("Player " + _index + " entered lava. Lose one life.");
             TakeLavaDamage();
+            ActivateVibration(true);
+        }
+        else
+        {
+            // Setup for the next time the player falls on the lava
+            _invulnerableTime = MaxInvulnerableTime;
+
+            if (collision.gameObject.tag == "Floor")
+            {
+                ActivateVibration(false);
+            }
+        }
+    }
+
+    void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.tag == "Lava" || collision.gameObject.tag == "Floor")
+        {
+            ActivateVibration(false);
         }
     }
 
@@ -176,6 +195,12 @@ public class Child : MonoBehaviour
                 Debug.Log("Player " + _index + " is still standing on lava. Lose one life.");
                 TakeLavaDamage();
             }
+
+            ActivateVibration(true);
+        }
+        else if (collision.gameObject.tag == "Floor")
+        {
+            ActivateVibration(false);
         }
     }
 
@@ -185,10 +210,21 @@ public class Child : MonoBehaviour
         _rb.AddForce(force);
     }
 
+    private void ActivateVibration(bool activate)
+    {
+        float intensity = activate ? 0.3f : 0f;
+
+        XInputDotNetPure.GamePad.SetVibration((XInputDotNetPure.PlayerIndex)_index, intensity, intensity);
+    }
+
     private void TakeLavaDamage()
     {
         // TODO: Lose a life (probably) and become immune for ~ 2 or 3 seconds
-
         _invulnerableTime = 0f;
+    }
+
+    void OnDestroy()
+    {
+        XInputDotNetPure.GamePad.SetVibration((XInputDotNetPure.PlayerIndex)_index, 0f, 0f);
     }
 }
