@@ -34,17 +34,12 @@ public class AutoTarget : MonoBehaviour {
 
             float dot = Vector3.Dot(targetDirection, lookingAngle);
             float angle = Mathf.Acos(dot) * Mathf.Rad2Deg;
-            
+
             if (angle < minAngle) {
                 minAngle = angle;
                 closest = t;
-            }
-            Debug.Log("angle: " + angle);
-
-            
+            }    
         }
-
-        Debug.Log("min angle:" + minAngle);
         
         return closest;
     }
