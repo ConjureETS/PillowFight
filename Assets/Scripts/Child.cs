@@ -195,7 +195,7 @@ public class Child : MonoBehaviour
         _currentBed = null;
     }
 
-    private Bed GetBed()
+    public Bed GetBed()
     {
         Collider[] colliders = Physics.OverlapSphere(GroundCheck.transform.position, 0.149f, 1 << LayerMask.NameToLayer("Bed"));
 

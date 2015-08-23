@@ -16,6 +16,8 @@ public class Bed : MonoBehaviour
 
     private float _nextSpawnDelay;
 
+    private GameObject _actionButtonUI;
+
     public bool IsTaken
     {
         get { return _isTaken; }
@@ -26,6 +28,8 @@ public class Bed : MonoBehaviour
         SpawnPillow();
 
         _nextSpawnDelay = GetNextSpawnDelay();
+
+        _actionButtonUI = transform.GetChild(0).gameObject;
     }
 
     void Update()
@@ -46,6 +50,7 @@ public class Bed : MonoBehaviour
             _currentPillow = null;
             _elapsedTime = 0f;
         }
+
     }
 
     private void SpawnPillow()
@@ -103,21 +108,35 @@ public class Bed : MonoBehaviour
             _currentPillow = col.gameObject.GetComponent<Pillow>();
         }
     }
+    */
 
     void OnCollisionExit(Collision col)
     {
-        if (_currentPillow != null && col.gameObject == _currentPillow.gameObject)
-        {
-            _currentPillow = null;
-        }
-    }*/
 
-    /*
+        if (col.gameObject.tag == "Player")
+        {
+            _actionButtonUI.SetActive(false);
+        }
+    }
+
+    
     void OnCollisionStay(Collision col)
     {
         if (col.gameObject.tag == "Player")
         {
+            if (GameManager.Instance.GetMomState() == MomBehavior.State.Warning && col.gameObject.GetComponent<Child>().GetBed() ) {
 
+                // show the button for sleeping when is on her way to the room
+                if (!_actionButtonUI.activeSelf) {
+                    _actionButtonUI.SetActive(true);
+                }
+            }
+            else {
+                if (_actionButtonUI.activeSelf) {
+                    _actionButtonUI.SetActive(false);
+                }
+            }
+            
         }
-    }*/
+    }
 }
