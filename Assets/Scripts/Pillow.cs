@@ -2,7 +2,10 @@
 using System.Collections;
 
 public class Pillow : MonoBehaviour {
-    
+
+    public Color SelectableMinColor;
+    public float LerpDuration = 2f;
+
     public bool IsThrown = false;
 
     public bool IsPickable = true;
@@ -10,12 +13,31 @@ public class Pillow : MonoBehaviour {
 
     private Collider _col;
     private Rigidbody _rb;
+    private MeshRenderer _renderer;
 
+    private bool _isOwned;
+    private Color _defaultColor;
+
+    private float _ratio = 0f;
+    private bool _lerpingUp = false;
+
+    public bool IsOwned
+    {
+        get { return _isOwned; }
+        set
+        {
+            _isOwned = value;
+            _renderer.material.color = _defaultColor;
+        }
+    }
 
 	// Use this for initialization
 	void Start () {
         _col = GetComponent<Collider>();
         _rb = GetComponent<Rigidbody>();
+        _renderer = GetComponent<MeshRenderer>();
+
+        _defaultColor = _renderer.material.color;
 	}
 	
 	// Update is called once per frame
@@ -23,6 +45,27 @@ public class Pillow : MonoBehaviour {
 
         if (transform.position.y < -1) {
             Destroy(this.gameObject);
+        }
+
+        if (!_isOwned)
+        {
+            _ratio += Time.deltaTime / LerpDuration / 2f;
+
+            if (_lerpingUp)
+            {
+                _renderer.material.color = Color.Lerp(SelectableMinColor, _defaultColor, _ratio);
+            }
+            else
+            {
+                _renderer.material.color = Color.Lerp(_defaultColor, SelectableMinColor, _ratio);
+            }
+
+            if (_ratio >= 1f)
+            {
+                _lerpingUp = !_lerpingUp;
+
+                _ratio = 0f;
+            }
         }
         
 	}
@@ -43,6 +86,7 @@ public class Pillow : MonoBehaviour {
         _rb.isKinematic = false;
         
         _rb.AddForce(force, ForceMode.Impulse);
+        _renderer.material.color = _defaultColor;
     }
 
     public void MakePickable() {
