@@ -111,6 +111,10 @@ public class ChildController : MonoBehaviour
             _child.WakeUp();
             InputManager.Instance.PushActiveContext("Awake", (int)PlayerNumber);
         }
+
+        if (input.Actions.Contains("Throw")) {
+            _child.Throw();
+        }
     }
 
 }
