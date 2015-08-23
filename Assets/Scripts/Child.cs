@@ -55,19 +55,23 @@ public class Child : MonoBehaviour
 
     void OnTriggerEnter(Collider other) {
         if (other.tag == "Pillow"){
-            
-            // picking up a pillow
-            if (this.pillow == null && !other.GetComponent<Pillow>().IsThrown) {
 
-                pillow = other.GetComponent<Pillow>();
-                other.transform.parent = transform; // make the pillow a child of Child
-                other.transform.localPosition = other.transform.position + transform.forward;
-                other.GetComponent<Collider>().enabled = false;
+            Pillow incomingPillow = other.GetComponent<Pillow>();
+
+            // picking up a pillow
+            if (this.pillow == null && !incomingPillow.IsThrown) {
+
+                pillow = incomingPillow;
+
+                pillow.transform.parent = transform; // make the pillow a child of Child
+                pillow.transform.localPosition = new Vector3(0f, 1.5f, 0f);
+                pillow.GetComponent<Rigidbody>().isKinematic = true; // dont make pillow obey to gravity when in a child's hands
+                
                 // TODO: place the pillow correctly or animate or something...
             }
 
             // getting hit by a pillow
-            else if (other.GetComponent<Pillow>().IsThrown) {
+            else if (incomingPillow.IsThrown) {
 
                 //player is hit
                 Debug.Log("Child is hit by a pillow");
@@ -169,23 +173,24 @@ public class Child : MonoBehaviour
     }
 
     internal void Throw() {
-        Vector3 direction;
-        if (target != null) {
-            direction = target.transform.position - pillow.transform.position;
+
+        if (pillow != null) {
+
+            Vector3 direction;
+
+            if (target != null) {
+                direction = target.transform.position - pillow.transform.position;
+            }
+            else {
+                direction = transform.forward;
+            }
+            direction = direction.normalized;
+
+            
+            pillow.Throw(direction * ThrowForce);
+
+            pillow = null;
         }
-        else {
-            direction = transform.forward;
-        }
-        direction = direction.normalized;
-        
-        
-        pillow.IsThrown = true;
-        pillow.transform.parent = null; // detach the pillow from the child object
-        pillow.GetComponent<Rigidbody>().isKinematic = false; 
-        pillow.GetComponent<Collider>().enabled = true;
-        pillow.GetComponent<Rigidbody>().AddForce(direction * ThrowForce, ForceMode.Impulse);
-        
-        pillow = null;
     }
 
 
