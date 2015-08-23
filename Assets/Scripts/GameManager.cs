@@ -36,6 +36,10 @@ public class GameManager : MonoBehaviour
         {
             InputManager.Instance.AddCallback(i, HandleMenuInput);
         }
+
+
+        // play gameplay music
+        MusicManager.Instance.PlayGameplayMusic();
     }
 
     public void PushMenuContext()
