@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(MeshRenderer))]
 public class Floor : MonoBehaviour
 {
     public MomBehavior Mom;
@@ -9,14 +8,12 @@ public class Floor : MonoBehaviour
     public Material LavaMaterial;
 
     public float PillowWaitTime = 2f;
-
-    private MeshRenderer _renderer;
+    public MeshRenderer Renderer;
 
     private GameObject lostPillows;
 
     void Awake()
     {
-        _renderer = GetComponent<MeshRenderer>();
         Mom.OnEnterRoom += ChangeToNormalFloor;
         Mom.OnLeaveRoom += ChangeToLavaFloor;
         lostPillows = transform.GetChild(0).gameObject;
@@ -24,14 +21,14 @@ public class Floor : MonoBehaviour
 
     private void ChangeToNormalFloor()
     {
-        _renderer.material = NormalMaterial;
+        Renderer.material = NormalMaterial;
         gameObject.tag = "Floor"; // Might not be necessary since the player is most likely "dead" if he touches a non-lava floor
         lostPillows.SetActive(true);
     }
 
     private void ChangeToLavaFloor()
     {
-        _renderer.material = LavaMaterial;
+        Renderer.material = LavaMaterial;
         gameObject.tag = "Lava"; // Might not be necessary since the player is most likely "dead" if he touches a non-lava floor
         lostPillows.SetActive(false);
     }
