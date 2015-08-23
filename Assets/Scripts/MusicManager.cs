@@ -55,6 +55,10 @@ public class MusicManager : MonoBehaviour
 
     public void PlayVictoryMusic()
     {
+        if (MainMenu.isPlaying) MainMenu.Stop();
+        if (Defeat.isPlaying) Defeat.Stop();
+        if (Gameplay.isPlaying) Gameplay.Stop();
+
         if (!Victory.isPlaying)
         {
             Victory.Play();
@@ -62,6 +66,11 @@ public class MusicManager : MonoBehaviour
     }
 
     public void PlayDefeatMusic() {
+        if (MainMenu.isPlaying) MainMenu.Stop();
+        if (Victory.isPlaying) Victory.Stop();
+        if (Gameplay.isPlaying) Gameplay.Stop();
+        
+
         if (!Defeat.isPlaying) {
             Defeat.Play();
         }
