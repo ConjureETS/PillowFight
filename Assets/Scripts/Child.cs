@@ -24,6 +24,7 @@ public class Child : MonoBehaviour
     private float _invulnerableTime;
     private Bed _currentBed;
     public Transform target;
+    private bool _isInLava;
 
     private int _index;
     private bool _isPushed = false;
@@ -186,6 +187,7 @@ public class Child : MonoBehaviour
     }
 
     internal void Throw() {
+        if (_isInLava) return;
 
         if (pillow != null) {
 
@@ -205,6 +207,8 @@ public class Child : MonoBehaviour
             pillow.IsOwned = false;
 
             pillow = null;
+
+            Animator.SetTrigger("StartAttack");
         }
     }
 
@@ -217,6 +221,7 @@ public class Child : MonoBehaviour
             TakeLavaDamage();
             ActivateVibration(true);
             Animator.SetBool("IsOnLava", true);
+            _isInLava = true;
         }
         else
         {
@@ -236,6 +241,7 @@ public class Child : MonoBehaviour
         {
             ActivateVibration(false);
             Animator.SetBool("IsOnLava", false);
+            _isInLava = false;
         }
     }
 
