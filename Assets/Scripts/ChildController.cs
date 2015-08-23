@@ -85,7 +85,7 @@ public class ChildController : MonoBehaviour
             else {
                 transform.eulerAngles = new Vector3(
                     transform.eulerAngles.x, 
-                    Mathf.Atan2(xLookingValue, zLookingValue) * Mathf.Rad2Deg, 
+                    Mathf.Atan2(xLookingValue, zLookingValue) * Mathf.Rad2Deg -90, // -90 to correct forward facing angle... 
                     transform.eulerAngles.z);
             }
         }
