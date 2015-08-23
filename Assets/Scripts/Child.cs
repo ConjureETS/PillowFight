@@ -169,7 +169,7 @@ public class Child : MonoBehaviour
             }
             // picking up a pillow
             else if (this.pillow == null && incomingPillow.IsPickable) {
-                Debug.Log("def");
+                //Debug.Log("def");
                 pillow = incomingPillow;
 
                 pillow.transform.parent = transform; // make the pillow a child of Child
@@ -359,7 +359,7 @@ public class Child : MonoBehaviour
 	void Die()
 	{
         PlayerWinsMenu menu = (PlayerWinsMenu)MenusHandler.MenusManager.Instance.ShowMenu("PlayerWinsMenu");
-        menu.SetPlayerIndex(this.Index);
+        menu.SetPlayerIndex(this.Index == 1 ? 2 : 1);
 
 		Destroy(gameObject);
 	}
