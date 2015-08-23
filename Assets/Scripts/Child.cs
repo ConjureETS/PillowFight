@@ -225,6 +225,22 @@ public class Child : MonoBehaviour
         }
     }
 
+	public void Swing()
+	{
+		//1. Determine if there is someone in front
+		Transform t = null; //GetTarget
+
+		if(t == null)
+			return;
+
+		//2. Apply force to the person
+		Vector3 direction = target.transform.position - transform.position;
+		
+		direction = direction.normalized;
+
+		t.gameObject.GetComponent<Child>().Push(direction * ThrowForce);
+	}
+
 
     void OnCollisionEnter(Collision collision)
     {
