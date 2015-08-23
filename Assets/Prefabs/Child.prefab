@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 567fe96dcacb08f4ab716a98ce99fc88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minAngleRange: 60
+  minAngleRange: 10
 --- !u!135 &13545904
 SphereCollider:
   m_ObjectHideFlags: 1
@@ -213,6 +213,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: Speed
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: minAngleRange
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
