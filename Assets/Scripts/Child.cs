@@ -9,6 +9,7 @@ public class Child : MonoBehaviour
     public float MaxInvulnerableTime = 2f;
     public float ThrowForce = 30f;
     public float hitPushBackForce = 250f;
+    public float yAngleVector = 9f;
 
     public GameObject GroundCheck;
     public Pillow pillow;
@@ -25,6 +26,10 @@ public class Child : MonoBehaviour
 
     private int _index;
     private bool _isPushed = false;
+    private bool _wasPushed = false;
+    private Vector3 _pushedDir;
+
+    private float _stunTime;
 
     public int Index
     {
@@ -50,6 +55,41 @@ public class Child : MonoBehaviour
         // look at the target
         if (target != null) {
             transform.LookAt(target);
+        }
+
+        // We move the child depending on the camera orientation
+
+        if (_stunTime >= Time.deltaTime * 3f && _wasPushed && _rb.velocity == Vector3.zero)
+        {
+            _wasPushed = false;
+        }
+
+        if (_isPushed)
+        {
+            _stunTime += Time.deltaTime;
+
+            if (_stunTime >= Time.deltaTime * 3f && _rb.velocity == Vector3.zero)
+            {
+                _isPushed = false;
+                _wasPushed = true;
+            }
+        }
+        else
+        {
+            _stunTime = 0f;
+            Vector3 forwardDir = Camera.main.transform.forward;
+            Vector3 rightDir = Camera.main.transform.right;
+
+            forwardDir.y = 0f;
+            forwardDir = forwardDir.normalized * _zValue * Speed;
+
+            rightDir.y = 0f;
+            rightDir = rightDir.normalized * _xValue * Speed;
+
+            Vector3 movement = forwardDir + rightDir;
+            movement.y = _rb.velocity.y;
+
+            _rb.velocity = movement;
         }
     }
 
@@ -80,35 +120,6 @@ public class Child : MonoBehaviour
                 Push( other.GetComponent<Rigidbody>().velocity.normalized * 10  * hitPushBackForce);
                 Destroy(other.gameObject);
             }
-        }
-    }
-
-    void FixedUpdate()
-    {
-        // We move the child depending on the camera orientation
-
-        if (_isPushed)
-        {
-            if (_rb.velocity == Vector3.zero)
-            {
-                _isPushed = false;
-            }
-        }
-        else
-        {                                                                                                                                                                                                                                                                                                                                   
-            Vector3 forwardDir = Camera.main.transform.forward;
-            Vector3 rightDir = Camera.main.transform.right;
-
-            forwardDir.y = 0f;
-            forwardDir = forwardDir.normalized * _zValue * Speed;
-
-            rightDir.y = 0f;
-            rightDir = rightDir.normalized * _xValue * Speed;
-
-            Vector3 movement = forwardDir + rightDir;
-            movement.y = _rb.velocity.y;
-
-            _rb.velocity = movement;
         }
     }
 
@@ -227,6 +238,11 @@ public class Child : MonoBehaviour
 
     void OnCollisionStay(Collision collision)
     {
+        if (collision.gameObject.tag == "Walls")
+        {
+            Debug.Log(_isPushed);
+        }
+
         if (collision.gameObject.tag == "Lava")
         {
             _invulnerableTime += Time.deltaTime;
@@ -243,12 +259,25 @@ public class Child : MonoBehaviour
         {
             ActivateVibration(false);
         }
+        else if (_wasPushed && collision.gameObject.tag == "Walls")
+        {
+            _wasPushed = false;
+
+            Push(Vector3.Reflect(_pushedDir.normalized, collision.contacts[0].normal) * _pushedDir.magnitude);
+        }
     }
 
     public void Push(Vector3 force)
     {
         _isPushed = true;
-        _rb.AddForce(force);
+
+        Debug.Log(force);
+
+        force.y = yAngleVector;
+
+        _rb.AddForce(force, ForceMode.Impulse);
+
+        _pushedDir = force;
     }
 
     private void ActivateVibration(bool activate)

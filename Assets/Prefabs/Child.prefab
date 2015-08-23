@@ -104,7 +104,7 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: .0500000007
+  m_AngularDrag: 0
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -125,7 +125,7 @@ MonoBehaviour:
   JumpForce: 200
   MaxInvulnerableTime: 2
   ThrowForce: 30
-  hitPushBackForce: 250
+  hitPushBackForce: 25
   GroundCheck: {fileID: 100272}
   pillow: {fileID: 0}
   Mom: {fileID: 0}
@@ -184,7 +184,7 @@ CapsuleCollider:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 190616}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 0aee2f6497df4f147aa581dac5fa5447, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: .5
