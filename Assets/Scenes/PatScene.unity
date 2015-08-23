@@ -598,38 +598,6 @@ Prefab:
       propertyPath: Mom
       value: 
       objectReference: {fileID: 1257411050}
-    - target: {fileID: 11446734, guid: 6dd661a967968c64dbae75c01fac6a09, type: 2}
-      propertyPath: PlayerNumber
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11430644, guid: 6dd661a967968c64dbae75c01fac6a09, type: 2}
-      propertyPath: hitPushBackForce
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 13685066, guid: 6dd661a967968c64dbae75c01fac6a09, type: 2}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 11430644, guid: 6dd661a967968c64dbae75c01fac6a09, type: 2}
-      propertyPath: Speed
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5480620, guid: 6dd661a967968c64dbae75c01fac6a09, type: 2}
-      propertyPath: m_AngularDrag
-      value: .0500000007
-      objectReference: {fileID: 0}
-    - target: {fileID: 11430644, guid: 6dd661a967968c64dbae75c01fac6a09, type: 2}
-      propertyPath: yAngleVector
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5480620, guid: 6dd661a967968c64dbae75c01fac6a09, type: 2}
-      propertyPath: m_Mass
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11430644, guid: 6dd661a967968c64dbae75c01fac6a09, type: 2}
-      propertyPath: JumpForce
-      value: 200
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6dd661a967968c64dbae75c01fac6a09, type: 2}
   m_IsPrefabParent: 0
@@ -1046,6 +1014,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerCount: 4
+  mom: {fileID: 1257411050}
 --- !u!4 &945259370
 Transform:
   m_ObjectHideFlags: 0
@@ -1096,10 +1065,6 @@ Prefab:
     - target: {fileID: 420792, guid: 0839912c1546d474686e48f2f1ea76fe, type: 2}
       propertyPath: m_RootOrder
       value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6472040, guid: 0839912c1546d474686e48f2f1ea76fe, type: 2}
-      propertyPath: m_Material
-      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0839912c1546d474686e48f2f1ea76fe, type: 2}
@@ -2554,6 +2519,14 @@ Prefab:
       propertyPath: Mom
       value: 
       objectReference: {fileID: 1257411050}
+    - target: {fileID: 11446734, guid: 6dd661a967968c64dbae75c01fac6a09, type: 2}
+      propertyPath: PlayerNumber
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 134552, guid: 6dd661a967968c64dbae75c01fac6a09, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6dd661a967968c64dbae75c01fac6a09, type: 2}
   m_IsPrefabParent: 0

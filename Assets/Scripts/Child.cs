@@ -16,6 +16,7 @@ public class Child : MonoBehaviour
     public MomBehavior Mom;
 	public PlayerAvatar Avatar;
     public Animator Animator;
+    public GameObject AnimationPillow;
 
     private Rigidbody _rb;
     private bool _isGrounded = false;
@@ -24,7 +25,7 @@ public class Child : MonoBehaviour
     private bool _isSleeping;
     private float _invulnerableTime;
     private Bed _currentBed;
-    public Transform target;
+    private bool _isInLava;
 
     private int _index;
     private bool _isPushed = false;
@@ -44,6 +45,8 @@ public class Child : MonoBehaviour
 			if (_numZ == 3) Die();
 		}
 	}
+    private AutoTarget _autoTarget;
+
     public int Index
     {
         get { return _index; }
@@ -59,6 +62,9 @@ public class Child : MonoBehaviour
     void Awake()
     {
         _rb = GetComponent<Rigidbody>();
+        AnimationPillow.SetActive(false);
+
+        _autoTarget = GetComponent<AutoTarget>();
     }
 
 	void Start()
@@ -71,11 +77,7 @@ public class Child : MonoBehaviour
         Animator.SetBool("IsOnBed", GetBed());
 
         _isGrounded = IsGrounded();
-        Debug.Log(_isGrounded);
-        // look at the target
-        if (target != null) {
-            transform.LookAt(target);
-        }
+        
 
         // We move the child depending on the camera orientation
 
@@ -202,11 +204,14 @@ public class Child : MonoBehaviour
         return colliders.Length > 0 ? colliders[0].GetComponent<Bed>() : null;
     }
 
-    internal void Throw() {
+    public void Throw() {
+        if (_isInLava) return;
 
         if (pillow != null) {
 
             Vector3 direction;
+
+            Transform target = _autoTarget.GetTarget(transform.forward);
 
             if (target != null) {
                 direction = target.transform.position - pillow.transform.position;
@@ -222,6 +227,9 @@ public class Child : MonoBehaviour
             pillow.IsOwned = false;
 
             pillow = null;
+
+            target = null;
+            Animator.SetTrigger("StartAttack");
         }
     }
 
@@ -250,6 +258,7 @@ public class Child : MonoBehaviour
             TakeLavaDamage();
             ActivateVibration(true);
             Animator.SetBool("IsOnLava", true);
+            _isInLava = true;
         }
         else
         {
@@ -269,6 +278,7 @@ public class Child : MonoBehaviour
         {
             ActivateVibration(false);
             Animator.SetBool("IsOnLava", false);
+            _isInLava = false;
         }
     }
 

@@ -1069,7 +1069,9 @@ MonoBehaviour:
   GroundCheck: {fileID: 100272}
   pillow: {fileID: 0}
   Mom: {fileID: 0}
+  Avatar: {fileID: 0}
   Animator: {fileID: 9580008}
+  AnimationPillow: {fileID: 134552}
   target: {fileID: 0}
 --- !u!114 &11446734
 MonoBehaviour:
@@ -1082,7 +1084,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6ffb35a11ff1f545ac22f7ea752cffb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerNumber: 0
+  PlayerNumber: 1
 --- !u!114 &11474836
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1117,7 +1119,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: .75
+  m_Radius: .519999981
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!136 &13685066
 CapsuleCollider:
@@ -1128,8 +1130,8 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: .5
-  m_Height: 1
+  m_Radius: .209999993
+  m_Height: 1.00999999
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!137 &13704276
