@@ -417,6 +417,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 436644}
   - 95: {fileID: 9580008}
+  - 114: {fileID: 11484968}
   m_Layer: 0
   m_Name: Container
   m_TagString: Untagged
@@ -1072,7 +1073,6 @@ MonoBehaviour:
   Avatar: {fileID: 0}
   Animator: {fileID: 9580008}
   AnimationPillow: {fileID: 134552}
-  target: {fileID: 0}
 --- !u!114 &11446734
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1084,7 +1084,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6ffb35a11ff1f545ac22f7ea752cffb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerNumber: 1
+  PlayerNumber: 0
 --- !u!114 &11474836
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1097,6 +1097,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minAngleRange: 10
+--- !u!114 &11484968
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 166010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d248c94f1991a74ba25229de4e648ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ImmediateParent: {fileID: 11430644}
 --- !u!135 &13545904
 SphereCollider:
   m_ObjectHideFlags: 1

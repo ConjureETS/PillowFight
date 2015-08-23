@@ -61,6 +61,8 @@ public class AutoTarget : MonoBehaviour
 
         foreach (Transform t in targets) 
 		{
+            if (t == null) continue;
+
             Vector3 targetDirection = t.transform.position - transform.position;
 			Debug.Log(targetDirection.magnitude);
 			if (targetDirection.sqrMagnitude > rangeSq)
