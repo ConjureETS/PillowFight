@@ -15,17 +15,6 @@ public class Pillow : MonoBehaviour {
         if (transform.position.y < -10) {
             Destroy(this.gameObject);
         }
+        
 	}
-
-    void OnTriggerEnter(Collider other) {
-        if (IsThrown && other.tag == "Player") {
-            
-            Debug.Log("A child got hit by a pillow!");
-
-            //other.GetComponent<Child>().takeHit();
-
-            Destroy(this.gameObject);
-        }
-    }
-
 }
