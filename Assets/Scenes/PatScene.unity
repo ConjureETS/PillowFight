@@ -1014,6 +1014,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerCount: 4
+  mom: {fileID: 1257411050}
 --- !u!4 &945259370
 Transform:
   m_ObjectHideFlags: 0
@@ -2521,6 +2522,10 @@ Prefab:
     - target: {fileID: 11446734, guid: 6dd661a967968c64dbae75c01fac6a09, type: 2}
       propertyPath: PlayerNumber
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 134552, guid: 6dd661a967968c64dbae75c01fac6a09, type: 2}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6dd661a967968c64dbae75c01fac6a09, type: 2}

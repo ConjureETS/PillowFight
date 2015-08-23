@@ -15,6 +15,7 @@ public class Child : MonoBehaviour
     public Pillow pillow;
     public MomBehavior Mom;
     public Animator Animator;
+    public GameObject AnimationPillow;
 
     private Rigidbody _rb;
     private bool _isGrounded = false;
@@ -48,6 +49,7 @@ public class Child : MonoBehaviour
     void Awake()
     {
         _rb = GetComponent<Rigidbody>();
+        AnimationPillow.SetActive(false);
     }
 
     void Update()
