@@ -56,6 +56,8 @@ public class AutoTarget : MonoBehaviour
 
         foreach (Transform t in targets) 
 		{
+            if (t == null) continue;
+
             Vector3 targetDirection = t.transform.position - transform.position;
             
             float realAngle = Mathf.Atan2(targetDirection.z, targetDirection.x) * Mathf.Rad2Deg;
