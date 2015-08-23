@@ -66,6 +66,7 @@ public class Child : MonoBehaviour
                 pillow.transform.parent = transform; // make the pillow a child of Child
                 pillow.transform.localPosition = new Vector3(0f, 1.5f, 0f);
                 pillow.GetComponent<Rigidbody>().isKinematic = true; // dont make pillow obey to gravity when in a child's hands
+                pillow.IsOwned = true;
                 
                 // TODO: place the pillow correctly or animate or something...
             }
@@ -188,6 +189,8 @@ public class Child : MonoBehaviour
 
             
             pillow.Throw(direction * ThrowForce);
+
+            pillow.IsOwned = false;
 
             pillow = null;
         }
