@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
 {
     public int PlayerCount = 4;
     private static GameManager _instance;
+    public MomBehavior mom;
 
     public static GameManager Instance
     {
@@ -69,5 +70,9 @@ public class GameManager : MonoBehaviour
         bool accept = input.Actions.Contains("Accept");
 
         MenusManager.Instance.SetInputValues(accept, false, 0f, yAxis);
+    }
+
+    public MomBehavior.State GetMomState() {
+        return mom.GetState();
     }
 }
