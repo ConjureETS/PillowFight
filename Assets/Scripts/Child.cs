@@ -166,7 +166,7 @@ public class Child : MonoBehaviour
         transform.localEulerAngles = new Vector3(0f, transform.localEulerAngles.y, transform.localEulerAngles.z);
     }
 
-    private Bed GetBed()
+    public Bed GetBed()
     {
         Collider[] colliders = Physics.OverlapSphere(GroundCheck.transform.position, 0.149f, 1 << LayerMask.NameToLayer("Bed"));
 

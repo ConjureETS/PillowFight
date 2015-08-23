@@ -20,7 +20,7 @@ public class MomBehavior : MonoBehaviour
 
     public Child[] Children;
 
-    private enum State { Away, Warning, InRoom }
+    public enum State { Away, Warning, InRoom }
 
     private State _currentState;
 
@@ -102,6 +102,10 @@ public class MomBehavior : MonoBehaviour
         }
 
         _currentState = newState;
+    }
+
+    public State GetState(){
+        return _currentState;
     }
 
     private void CheckIfSleeping()
