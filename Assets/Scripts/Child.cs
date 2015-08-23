@@ -9,10 +9,12 @@ public class Child : MonoBehaviour
     public float MaxInvulnerableTime = 2f;
     public float ThrowForce = 30f;
     public float hitPushBackForce = 250f;
+    public float yAngleVector = 9f;
 
     public GameObject GroundCheck;
     public Pillow pillow;
     public MomBehavior Mom;
+    public Animator Animator;
 
     private Rigidbody _rb;
     private bool _isGrounded = false;
@@ -25,6 +27,10 @@ public class Child : MonoBehaviour
 
     private int _index;
     private bool _isPushed = false;
+    private bool _wasPushed = false;
+    private Vector3 _pushedDir;
+
+    private float _stunTime;
 
     public int Index
     {
@@ -45,11 +51,48 @@ public class Child : MonoBehaviour
 
     void Update()
     {
-        _isGrounded = IsGrounded();
+        Animator.SetBool("IsOnBed", GetBed());
 
+        _isGrounded = IsGrounded();
+        Debug.Log(_isGrounded);
         // look at the target
         if (target != null) {
             transform.LookAt(target);
+        }
+
+        // We move the child depending on the camera orientation
+
+        if (_stunTime >= Time.deltaTime * 3f && _wasPushed && _rb.velocity == Vector3.zero)
+        {
+            _wasPushed = false;
+        }
+
+        if (_isPushed)
+        {
+            _stunTime += Time.deltaTime;
+
+            if (_stunTime >= Time.deltaTime * 3f && _rb.velocity == Vector3.zero)
+            {
+                _isPushed = false;
+                _wasPushed = true;
+            }
+        }
+        else
+        {
+            _stunTime = 0f;
+            Vector3 forwardDir = Camera.main.transform.forward;
+            Vector3 rightDir = Camera.main.transform.right;
+
+            forwardDir.y = 0f;
+            forwardDir = forwardDir.normalized * _zValue * Speed;
+
+            rightDir.y = 0f;
+            rightDir = rightDir.normalized * _xValue * Speed;
+
+            Vector3 movement = forwardDir + rightDir;
+            movement.y = _rb.velocity.y;
+
+            _rb.velocity = movement;
         }
     }
 
@@ -83,35 +126,6 @@ public class Child : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
-    {
-        // We move the child depending on the camera orientation
-
-        if (_isPushed)
-        {
-            if (_rb.velocity == Vector3.zero)
-            {
-                _isPushed = false;
-            }
-        }
-        else
-        {                                                                                                                                                                                                                                                                                                                                   
-            Vector3 forwardDir = Camera.main.transform.forward;
-            Vector3 rightDir = Camera.main.transform.right;
-
-            forwardDir.y = 0f;
-            forwardDir = forwardDir.normalized * _zValue * Speed;
-
-            rightDir.y = 0f;
-            rightDir = rightDir.normalized * _xValue * Speed;
-
-            Vector3 movement = forwardDir + rightDir;
-            movement.y = _rb.velocity.y;
-
-            _rb.velocity = movement;
-        }
-    }
-
     private bool IsGrounded()
     {
         int mask = (1 << LayerMask.NameToLayer("Ground")) | (1 << LayerMask.NameToLayer("Bed"));
@@ -134,6 +148,8 @@ public class Child : MonoBehaviour
             _isGrounded = false;
 
             _rb.AddForce(new Vector3(0f, JumpForce, 0f));
+
+            Animator.SetTrigger("jump");
         }
     }
 
@@ -146,9 +162,7 @@ public class Child : MonoBehaviour
             _currentBed = bed;
             bed.Take();
             _isSleeping = true;
-
-            // Temporary (only for visual cue until we get the animation)
-            transform.localEulerAngles = new Vector3(90f, transform.localEulerAngles.y, transform.localEulerAngles.z);
+            Animator.SetBool("IsSleeping", true);
         }
 
         return _isSleeping;
@@ -157,13 +171,11 @@ public class Child : MonoBehaviour
     public void WakeUp()
     {
         _isSleeping = false;
+        Animator.SetBool("IsSleeping", false);
 
         _currentBed.Leave();
 
         _currentBed = null;
-
-        // Temporary (only for visual cue until we get the animation)
-        transform.localEulerAngles = new Vector3(0f, transform.localEulerAngles.y, transform.localEulerAngles.z);
     }
 
     public Bed GetBed()
@@ -204,6 +216,7 @@ public class Child : MonoBehaviour
             Debug.Log("Player " + _index + " entered lava. Lose one life.");
             TakeLavaDamage();
             ActivateVibration(true);
+            Animator.SetBool("IsOnLava", true);
         }
         else
         {
@@ -222,11 +235,17 @@ public class Child : MonoBehaviour
         if (collision.gameObject.tag == "Lava" || collision.gameObject.tag == "Floor")
         {
             ActivateVibration(false);
+            Animator.SetBool("IsOnLava", false);
         }
     }
 
     void OnCollisionStay(Collision collision)
     {
+        if (collision.gameObject.tag == "Walls")
+        {
+            Debug.Log(_isPushed);
+        }
+
         if (collision.gameObject.tag == "Lava")
         {
             _invulnerableTime += Time.deltaTime;
@@ -243,12 +262,25 @@ public class Child : MonoBehaviour
         {
             ActivateVibration(false);
         }
+        else if (_wasPushed && collision.gameObject.tag == "Walls")
+        {
+            _wasPushed = false;
+
+            Push(Vector3.Reflect(_pushedDir.normalized, collision.contacts[0].normal) * _pushedDir.magnitude);
+        }
     }
 
     public void Push(Vector3 force)
     {
         _isPushed = true;
-        _rb.AddForce(force);
+
+        Debug.Log(force);
+
+        force.y = yAngleVector;
+
+        _rb.AddForce(force, ForceMode.Impulse);
+
+        _pushedDir = force;
     }
 
     private void ActivateVibration(bool activate)
