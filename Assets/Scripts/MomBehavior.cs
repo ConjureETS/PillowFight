@@ -126,6 +126,7 @@ public class MomBehavior : MonoBehaviour
 
                 // TODO: Visual animation that the player lost (lasso?)
 
+				child.NumZ = 4;
                 Destroy(child.gameObject);
             }
         }

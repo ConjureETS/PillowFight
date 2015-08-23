@@ -14,7 +14,9 @@ public class Child : MonoBehaviour
     public GameObject GroundCheck;
     public Pillow pillow;
     public MomBehavior Mom;
+	public PlayerAvatar Avatar;
     public Animator Animator;
+    public GameObject AnimationPillow;
 
     private Rigidbody _rb;
     private bool _isGrounded = false;
@@ -23,6 +25,7 @@ public class Child : MonoBehaviour
     private bool _isSleeping;
     private float _invulnerableTime;
     private Bed _currentBed;
+    private bool _isInLava;
 
     private int _index;
     private bool _isPushed = false;
@@ -31,6 +34,17 @@ public class Child : MonoBehaviour
 
     private float _stunTime;
 
+	private int _numZ = 0;
+	public int NumZ
+	{
+		get { return _numZ; }
+		set
+		{
+			_numZ = value;
+			Avatar.NumZ = _numZ;
+			if (_numZ == 3) Die();
+		}
+	}
     private AutoTarget _autoTarget;
 
     public int Index
@@ -48,7 +62,14 @@ public class Child : MonoBehaviour
     void Awake()
     {
         _rb = GetComponent<Rigidbody>();
+        AnimationPillow.SetActive(false);
+
         _autoTarget = GetComponent<AutoTarget>();
+    }
+
+	void Start()
+	{
+		Avatar.PlayerNum = Index + 1;
     }
 
     void Update()
@@ -184,6 +205,7 @@ public class Child : MonoBehaviour
     }
 
     public void Throw() {
+        if (_isInLava) return;
 
         if (pillow != null) {
 
@@ -207,6 +229,7 @@ public class Child : MonoBehaviour
             pillow = null;
 
             target = null;
+            Animator.SetTrigger("StartAttack");
         }
     }
 
@@ -219,11 +242,12 @@ public class Child : MonoBehaviour
             TakeLavaDamage();
             ActivateVibration(true);
             Animator.SetBool("IsOnLava", true);
+            _isInLava = true;
         }
         else
         {
             // Setup for the next time the player falls on the lava
-            _invulnerableTime = MaxInvulnerableTime;
+            //_invulnerableTime = MaxInvulnerableTime;
 
             if (collision.gameObject.tag == "Floor")
             {
@@ -238,6 +262,7 @@ public class Child : MonoBehaviour
         {
             ActivateVibration(false);
             Animator.SetBool("IsOnLava", false);
+            _isInLava = false;
         }
     }
 
@@ -292,13 +317,19 @@ public class Child : MonoBehaviour
         XInputDotNetPure.GamePad.SetVibration((XInputDotNetPure.PlayerIndex)_index, intensity, intensity);
     }
 
-    private void TakeLavaDamage()
-    {
-        // TODO: Lose a life (probably) and become immune for ~ 2 or 3 seconds
-        _invulnerableTime = 0f;
-    }
+	private void TakeLavaDamage()
+	{
+		NumZ += 1;
+		// TODO: Lose a life (probably) and become immune for ~ 2 or 3 seconds
+		_invulnerableTime = 0f;
+	}
 
-    void OnDestroy()
+	void Die()
+	{
+		Destroy(gameObject);
+	}
+
+	void OnDestroy()
     {
         ActivateVibration(false);
     }
