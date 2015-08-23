@@ -7,6 +7,9 @@ public class Child : MonoBehaviour
     public float Speed = 10f;
     public float JumpForce = 10f;
     public float MaxInvulnerableTime = 2f;
+    public float ThrowForce = 30f;
+    public float hitPushBackForce = 250f;
+
     public GameObject GroundCheck;
     public Pillow pillow;
     public MomBehavior Mom;
@@ -51,14 +54,31 @@ public class Child : MonoBehaviour
     }
 
     void OnTriggerEnter(Collider other) {
-        if (other.tag == "Pillow") {
-            
-            pillow = other.GetComponent<Pillow>();
-            other.transform.parent = transform; // make the pillow a child of Child
-            
-            // TODO: place the pillow correctly or animate or something...
+        if (other.tag == "Pillow"){
 
-        //Debug.Log(_isGrounded);
+            Pillow incomingPillow = other.GetComponent<Pillow>();
+
+            // picking up a pillow
+            if (this.pillow == null && !incomingPillow.IsThrown) {
+
+                pillow = incomingPillow;
+
+                pillow.transform.parent = transform; // make the pillow a child of Child
+                pillow.transform.localPosition = new Vector3(0f, 1.5f, 0f);
+                pillow.GetComponent<Rigidbody>().isKinematic = true; // dont make pillow obey to gravity when in a child's hands
+                
+                // TODO: place the pillow correctly or animate or something...
+            }
+
+            // getting hit by a pillow
+            else if (incomingPillow.IsThrown) {
+
+                //player is hit
+                Debug.Log("Child is hit by a pillow");
+
+                Push( other.GetComponent<Rigidbody>().velocity.normalized * 10  * hitPushBackForce);
+                Destroy(other.gameObject);
+            }
         }
     }
 
@@ -151,6 +171,28 @@ public class Child : MonoBehaviour
 
         return colliders.Length > 0 ? colliders[0].GetComponent<Bed>() : null;
     }
+
+    internal void Throw() {
+
+        if (pillow != null) {
+
+            Vector3 direction;
+
+            if (target != null) {
+                direction = target.transform.position - pillow.transform.position;
+            }
+            else {
+                direction = transform.forward;
+            }
+            direction = direction.normalized;
+
+            
+            pillow.Throw(direction * ThrowForce);
+
+            pillow = null;
+        }
+    }
+
 
     void OnCollisionEnter(Collision collision)
     {

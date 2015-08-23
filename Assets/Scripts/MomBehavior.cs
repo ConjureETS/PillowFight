@@ -8,7 +8,6 @@ using InputHandler;
 
 public class MomBehavior : MonoBehaviour
 {
-    public Action OnWarning;
     public Action OnEnterRoom;
     public Action OnLeaveRoom;
 
@@ -17,20 +16,23 @@ public class MomBehavior : MonoBehaviour
     public float MaxTriggerTime = 90f;
     public float WarningHeadsupTime = 5f;
     public float MotherStayTime = 2f;
+    public Door RoomDoor;
 
     public Child[] Children;
+
+    private enum State { Away, Warning, InRoom }
+
+    private State _currentState;
 
     private float _elapsedTime = 0f;
 
     private float _nextTriggerTime;
 
-    private bool _isInRoom;
-
     private bool _gameOver = false;
 
     public bool IsInRoom
     {
-        get { return _isInRoom; }
+        get { return _currentState == State.InRoom; }
     }
 
     void Awake()
@@ -46,83 +48,100 @@ public class MomBehavior : MonoBehaviour
 
         _elapsedTime += Time.deltaTime;
 
-        if (_elapsedTime >= _nextTriggerTime - WarningHeadsupTime && _elapsedTime < _nextTriggerTime)
+        switch (_currentState)
         {
-            WarningText.gameObject.SetActive(true);
-
-            if (OnWarning != null)
-            {
-                OnWarning();
-            }
-        }
-        else if (_elapsedTime >= _nextTriggerTime)
-        {
-            WarningText.gameObject.SetActive(false);
-            _nextTriggerTime = GetNextTriggerTime();
-
-            _elapsedTime = 0f;
-
-            StartCoroutine(StayInRoom());
-        }
-
-        if (_isInRoom)
-        {
-            List<Child> safeChildren = new List<Child>();
-
-            foreach (Child child in Children)
-            {
-                if (child == null) continue;
-
-                if (child.IsSleeping)
+            case State.Away:
+                if (_elapsedTime >= _nextTriggerTime - WarningHeadsupTime && _elapsedTime < _nextTriggerTime)
                 {
-                    safeChildren.Add(child);
+                    SetState(State.Warning);
                 }
-                else
+                break;
+            case State.Warning:
+                if (_elapsedTime >= _nextTriggerTime)
                 {
-                    Debug.Log("Player " + child.Index + " has been spotted by mom.");
-
-                    // TODO: Visual animation that the player lost (lasso?)
-
-                    Destroy(child.gameObject);
+                    SetState(State.InRoom);
                 }
-            }
+                break;
+            case State.InRoom:
+                if (_elapsedTime >= 2f)
+                {
+                    SetState(State.Away);
+                }
 
-            if (safeChildren.Count == 0)
-            {
-                Debug.Log("Mom wins!");
-
-                MenusManager.Instance.ShowMenu("MomWinsMenu");
-
-                _gameOver = true;
-            }
-            else if (safeChildren.Count == 1)
-            {
-                Debug.Log("Player " + safeChildren[0].Index + " wins!");
-
-                PlayerWinsMenu menu = (PlayerWinsMenu)MenusManager.Instance.ShowMenu("PlayerWinsMenu");
-                menu.SetPlayerIndex(safeChildren[0].Index);
-
-                _gameOver = true;
-            }
+                CheckIfSleeping();
+                break;
         }
     }
 
-    private IEnumerator StayInRoom()
+    private void SetState(State newState)
     {
-        if (OnEnterRoom != null)
+        switch (newState)
         {
-            OnEnterRoom();
+            case State.Away:
+                RoomDoor.Close(OnLeaveRoom);
+                _elapsedTime = 0f;
+                break;
+            case State.Warning:
+                // Temporary
+                WarningText.gameObject.SetActive(true);
+
+                RoomDoor.Open();
+                break;
+            case State.InRoom:
+                // Temporary
+                WarningText.gameObject.SetActive(false);
+                _nextTriggerTime = GetNextTriggerTime();
+
+                _elapsedTime = 0f;
+
+                if (OnEnterRoom != null)
+                {
+                    OnEnterRoom();
+                }
+                break;
         }
 
-        _isInRoom = true;
+        _currentState = newState;
+    }
 
-        yield return new WaitForSeconds(MotherStayTime);
+    private void CheckIfSleeping()
+    {
+        List<Child> safeChildren = new List<Child>();
 
-        _isInRoom = false;
-
-        if (OnLeaveRoom != null)
+        foreach (Child child in Children)
         {
-            OnLeaveRoom();
+            if (child == null) continue;
+
+            if (child.IsSleeping)
+            {
+                safeChildren.Add(child);
+            }
+            else
+            {
+                Debug.Log("Player " + child.Index + " has been spotted by mom.");
+
+                // TODO: Visual animation that the player lost (lasso?)
+
+                Destroy(child.gameObject);
+            }
+        }
+
+        if (safeChildren.Count == 0)
+        {
+            Debug.Log("Mom wins!");
+
+            MenusManager.Instance.ShowMenu("MomWinsMenu");
+
+            _gameOver = true;
+        }
+        else if (safeChildren.Count == 1)
+        {
+            Debug.Log("Player " + safeChildren[0].Index + " wins!");
+
+            PlayerWinsMenu menu = (PlayerWinsMenu)MenusManager.Instance.ShowMenu("PlayerWinsMenu");
+            menu.SetPlayerIndex(safeChildren[0].Index);
+
+            _gameOver = true;
         }
     }
 
