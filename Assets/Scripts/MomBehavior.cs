@@ -63,7 +63,7 @@ public class MomBehavior : MonoBehaviour
                 }
                 break;
             case State.InRoom:
-                if (_elapsedTime >= 2f)
+                if (_elapsedTime >= MotherStayTime)
                 {
                     SetState(State.Away);
                 }

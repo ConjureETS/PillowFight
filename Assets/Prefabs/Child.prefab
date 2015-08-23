@@ -104,7 +104,7 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: .0500000007
+  m_AngularDrag: 0
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -125,7 +125,7 @@ MonoBehaviour:
   JumpForce: 200
   MaxInvulnerableTime: 2
   ThrowForce: 30
-  hitPushBackForce: 250
+  hitPushBackForce: 25
   GroundCheck: {fileID: 100272}
   pillow: {fileID: 0}
   Mom: {fileID: 0}
@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 567fe96dcacb08f4ab716a98ce99fc88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minAngleRange: 60
+  minAngleRange: 10
 --- !u!135 &13545904
 SphereCollider:
   m_ObjectHideFlags: 1
@@ -184,7 +184,7 @@ CapsuleCollider:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 190616}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 0aee2f6497df4f147aa581dac5fa5447, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: .5
@@ -213,6 +213,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: Speed
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: minAngleRange
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
