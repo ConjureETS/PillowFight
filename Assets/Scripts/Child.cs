@@ -169,7 +169,7 @@ public class Child : MonoBehaviour
             }
             // picking up a pillow
             else if (this.pillow == null && incomingPillow.IsPickable) {
-                Debug.Log("def");
+                //Debug.Log("def");
                 pillow = incomingPillow;
 
                 pillow.transform.parent = transform; // make the pillow a child of Child

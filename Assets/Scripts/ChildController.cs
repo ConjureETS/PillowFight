@@ -97,7 +97,7 @@ public class ChildController : MonoBehaviour
         if (input.Ranges.ContainsKey("Throw"))
             _child.Throw();
 
-		if (input.Ranges.ContainsKey("Hit"))
+		if (input.Actions.Contains("Hit"))
 			_child.Swing();
     }
 
