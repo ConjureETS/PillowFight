@@ -236,13 +236,13 @@ public class Child : MonoBehaviour
 	public void Swing()
 	{
 		//1. Determine if there is someone in front
-		Transform t = null; //GetTarget
+		Transform t = null;//_autoTarget.GetTarget(transform.forward, 0.9f);
 
 		if(t == null)
 			return;
 
 		//2. Apply force to the person
-		Vector3 direction = target.transform.position - transform.position;
+		Vector3 direction = t.transform.position - transform.position;
 		
 		direction = direction.normalized;
 
