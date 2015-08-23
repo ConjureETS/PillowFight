@@ -10,6 +10,13 @@ public class Pillow : MonoBehaviour {
     private Collider _col;
     private Rigidbody _rb;
 
+    private bool _isOwned;
+
+    public bool IsOwned
+    {
+        get { return _isOwned; }
+        set { _isOwned = value; }
+    }
 
 	// Use this for initialization
 	void Start () {

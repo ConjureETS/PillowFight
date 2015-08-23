@@ -41,6 +41,11 @@ public class Bed : MonoBehaviour
                 _nextSpawnDelay = GetNextSpawnDelay();
             }
         }
+        else if (_currentPillow.IsOwned)
+        {
+            _currentPillow = null;
+            _elapsedTime = 0f;
+        }
     }
 
     private void SpawnPillow()
@@ -87,17 +92,6 @@ public class Bed : MonoBehaviour
     public void Leave()
     {
         _isTaken = false;
-    }
-
-    void OnCollisionExit(Collision col)
-    {
-        Debug.Log(_currentPillow != null && col.gameObject == _currentPillow.gameObject);
-
-        if (_currentPillow != null && col.gameObject == _currentPillow.gameObject)
-        {
-            _currentPillow = null;
-            _elapsedTime = 0f;
-        }
     }
 
     /*
