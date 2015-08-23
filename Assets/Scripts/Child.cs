@@ -359,7 +359,7 @@ public class Child : MonoBehaviour
 	void Die()
 	{
         PlayerWinsMenu menu = (PlayerWinsMenu)MenusHandler.MenusManager.Instance.ShowMenu("PlayerWinsMenu");
-        menu.SetPlayerIndex(this.Index);
+        menu.SetPlayerIndex(this.Index == 1 ? 2 : 1);
 
 		Destroy(gameObject);
 	}

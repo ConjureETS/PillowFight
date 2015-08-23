@@ -5,10 +5,6 @@ public class SimpleMenu : MonoBehaviour
 {
 	public int NextLevel;
 
-	// Use this for initialization
-	void Start () {
-        StartCoroutine(AutoSkip());
-	}
 	
 	// Update is called once per frame
 	void Update () {
@@ -20,7 +16,7 @@ public class SimpleMenu : MonoBehaviour
     IEnumerator AutoSkip() {
 
         yield return new WaitForSeconds(5);
-        Application.LoadLevel(NextLevel);
+        
 
     }
 }
