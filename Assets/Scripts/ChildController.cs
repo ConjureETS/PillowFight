@@ -89,6 +89,22 @@ public class ChildController : MonoBehaviour
                     transform.eulerAngles.z);
             }
         }
+        else {
+            _child.target = null; // no auto targeting when not actively pressing the joystick in a direction
+
+            // if player is not look with the right joystick, then face the direction we're going
+            // if left joystick is used, else we don't change the facing direction
+            if (xValue != 0 || zValue!= 0) {
+                transform.eulerAngles = new Vector3(
+                    transform.eulerAngles.x,
+                    Mathf.Atan2(xValue, zValue) * Mathf.Rad2Deg - 90,
+                    transform.eulerAngles.z);
+            }
+        }
+
+        if (input.Ranges.ContainsKey("Throw")) {
+            _child.Throw();
+        }
     }
 
     private void HandlePlayerButtons(MappedInput input)
@@ -110,10 +126,6 @@ public class ChildController : MonoBehaviour
             Debug.Log("AWAKE");
             _child.WakeUp();
             InputManager.Instance.PushActiveContext("Awake", (int)PlayerNumber);
-        }
-
-        if (input.Actions.Contains("Throw")) {
-            _child.Throw();
         }
     }
 
