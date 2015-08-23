@@ -59,7 +59,7 @@ public class Child : MonoBehaviour
             Pillow incomingPillow = other.GetComponent<Pillow>();
 
             // picking up a pillow
-            if (this.pillow == null && !incomingPillow.IsThrown) {
+            if (this.pillow == null && incomingPillow.IsPickable) {
 
                 pillow = incomingPillow;
 

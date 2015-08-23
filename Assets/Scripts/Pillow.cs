@@ -7,8 +7,9 @@ public class Pillow : MonoBehaviour {
     public float LerpDuration = 2f;
 
     public bool IsThrown = false;
-    
-    private bool IsPickable = true;
+
+    public bool IsPickable = true;
+    public bool IsLost = false;
 
     private Collider _col;
     private Rigidbody _rb;
@@ -70,7 +71,7 @@ public class Pillow : MonoBehaviour {
 	}
 
     void OnCollisionEnter(Collision other) {
-        if (!IsPickable) {
+        if (!IsPickable && !IsLost) {
             // on first collision, revert the pillow as pickable
             MakePickable();
         }
@@ -81,8 +82,9 @@ public class Pillow : MonoBehaviour {
         IsThrown = true;
         IsPickable = false;
         transform.parent = null; // detach the pillow from the child object
+
         _rb.isKinematic = false;
-        _col.enabled = true;
+        
         _rb.AddForce(force, ForceMode.Impulse);
         _renderer.material.color = _defaultColor;
     }
@@ -91,7 +93,6 @@ public class Pillow : MonoBehaviour {
         IsThrown = false;
         IsPickable = true;
 
-        _col.enabled = true;
         _rb.isKinematic = false;
     }
 
