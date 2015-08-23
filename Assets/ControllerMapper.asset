@@ -17,9 +17,6 @@ MonoBehaviour:
     - name: Jump
       XboxButtons: 00000000
       KeyboardKeys: 
-    - name: Throw
-      XboxButtons: 01000000
-      KeyboardKeys: 
     - name: Sleep
       XboxButtons: 02000000
       KeyboardKeys: 
@@ -47,6 +44,9 @@ MonoBehaviour:
       KeyboardKeys: 
     - name: LookBackward
       Axis: 07000000
+      KeyboardKeys: 
+    - name: Throw
+      Axis: 09000000
       KeyboardKeys: 
     ButtonStates: []
   - name: Sleeping

@@ -89,6 +89,10 @@ public class ChildController : MonoBehaviour
                     transform.eulerAngles.z);
             }
         }
+
+        if (input.Ranges.ContainsKey("Throw")) {
+            _child.Throw();
+        }
     }
 
     private void HandlePlayerButtons(MappedInput input)
@@ -110,10 +114,6 @@ public class ChildController : MonoBehaviour
             Debug.Log("AWAKE");
             _child.WakeUp();
             InputManager.Instance.PushActiveContext("Awake", (int)PlayerNumber);
-        }
-
-        if (input.Actions.Contains("Throw")) {
-            _child.Throw();
         }
     }
 
