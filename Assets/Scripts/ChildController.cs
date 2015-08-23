@@ -75,23 +75,15 @@ public class ChildController : MonoBehaviour
         }
 
         if (xLookingValue != 0 || zLookingValue != 0) {
-            //Transform target = _autoTarget.GetTarget(new Vector3(xLookingValue, 0, zLookingValue));
-			Transform target = _autoTarget.GetTarget(xLookingValue, zLookingValue);
             
-            _child.target = target;
-            if (_child.target != null) {
-                transform.LookAt(_child.target);
-            }
-            else {
-                transform.eulerAngles = new Vector3(
+            transform.eulerAngles = new Vector3(
                     transform.eulerAngles.x, 
                     Mathf.Atan2(xLookingValue, zLookingValue) * Mathf.Rad2Deg -90, // -90 to correct forward facing angle... 
                     transform.eulerAngles.z);
-            }
+            
         }
         else {
-            _child.target = null; // no auto targeting when not actively pressing the joystick in a direction
-
+            
             // if player is not look with the right joystick, then face the direction we're going
             // if left joystick is used, else we don't change the facing direction
             if (xValue != 0 || zValue!= 0) {

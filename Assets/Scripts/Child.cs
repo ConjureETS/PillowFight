@@ -23,7 +23,6 @@ public class Child : MonoBehaviour
     private bool _isSleeping;
     private float _invulnerableTime;
     private Bed _currentBed;
-    public Transform target;
 
     private int _index;
     private bool _isPushed = false;
@@ -31,6 +30,8 @@ public class Child : MonoBehaviour
     private Vector3 _pushedDir;
 
     private float _stunTime;
+
+    private AutoTarget _autoTarget;
 
     public int Index
     {
@@ -47,6 +48,7 @@ public class Child : MonoBehaviour
     void Awake()
     {
         _rb = GetComponent<Rigidbody>();
+        _autoTarget = GetComponent<AutoTarget>();
     }
 
     void Update()
@@ -54,11 +56,7 @@ public class Child : MonoBehaviour
         Animator.SetBool("IsOnBed", GetBed());
 
         _isGrounded = IsGrounded();
-        Debug.Log(_isGrounded);
-        // look at the target
-        if (target != null) {
-            transform.LookAt(target);
-        }
+        
 
         // We move the child depending on the camera orientation
 
@@ -185,11 +183,13 @@ public class Child : MonoBehaviour
         return colliders.Length > 0 ? colliders[0].GetComponent<Bed>() : null;
     }
 
-    internal void Throw() {
+    public void Throw() {
 
         if (pillow != null) {
 
             Vector3 direction;
+
+            Transform target = _autoTarget.GetTarget(transform.forward);
 
             if (target != null) {
                 direction = target.transform.position - pillow.transform.position;
@@ -205,6 +205,8 @@ public class Child : MonoBehaviour
             pillow.IsOwned = false;
 
             pillow = null;
+
+            target = null;
         }
     }
 
