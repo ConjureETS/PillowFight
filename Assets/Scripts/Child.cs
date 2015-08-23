@@ -8,6 +8,7 @@ public class Child : MonoBehaviour
     public float JumpForce = 10f;
     public float MaxInvulnerableTime = 2f;
     public float ThrowForce = 30f;
+	public float HitForce = 3f;
     public float hitPushBackForce = 250f;
     public float yAngleVector = 9f;
 
@@ -235,8 +236,10 @@ public class Child : MonoBehaviour
 
 	public void Swing()
 	{
+		if (pillow == null) return;
+
 		//1. Determine if there is someone in front
-		Transform t = null;//_autoTarget.GetTarget(transform.forward, 0.9f);
+		Transform t = _autoTarget.GetTarget(transform.forward, 1.2f, 30);
 
 		if(t == null)
 			return;
@@ -246,7 +249,7 @@ public class Child : MonoBehaviour
 		
 		direction = direction.normalized;
 
-		t.gameObject.GetComponent<Child>().Push(direction * ThrowForce);
+		t.gameObject.GetComponent<Child>().Push(direction * HitForce);
 	}
 
 

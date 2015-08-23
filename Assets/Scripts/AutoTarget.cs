@@ -47,13 +47,12 @@ public class AutoTarget : MonoBehaviour
 	
     public Transform GetTarget(Vector3 lookingAngle) 
 	{
-		return GetTarget(lookingAngle, 2000);
+		return GetTarget(lookingAngle, 2000, minAngleRange);
 	}
 
-	public Transform GetTarget(Vector3 lookingAngle, float range)
+	public Transform GetTarget(Vector3 lookingAngle, float range, float minAngle)
 	{
         Transform closest = null;
-        float minAngle = minAngleRange;
 		float rangeSq = range * range;
 
         //Debug.Log("looking direction:" + lookingAngle);
@@ -63,6 +62,7 @@ public class AutoTarget : MonoBehaviour
         foreach (Transform t in targets) 
 		{
             Vector3 targetDirection = t.transform.position - transform.position;
+			Debug.Log(targetDirection.magnitude);
 			if (targetDirection.sqrMagnitude > rangeSq)
 				continue;
             
