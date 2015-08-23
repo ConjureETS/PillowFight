@@ -8,6 +8,7 @@ public class Child : MonoBehaviour
     public float JumpForce = 10f;
     public float MaxInvulnerableTime = 2f;
     public float ThrowForce = 30f;
+	public float HitForce = 3f;
     public float hitPushBackForce = 250f;
     public float yAngleVector = 9f;
 
@@ -250,6 +251,24 @@ public class Child : MonoBehaviour
         }
     }
 
+	public void Swing()
+	{
+		if (pillow == null) return;
+
+		//1. Determine if there is someone in front
+		Transform t = _autoTarget.GetTarget(transform.forward, 1.2f, 30);
+
+		if(t == null)
+			return;
+
+		//2. Apply force to the person
+		Vector3 direction = t.transform.position - transform.position;
+		
+		direction = direction.normalized;
+
+		t.gameObject.GetComponent<Child>().Push(direction * HitForce);
+	}
+
 
     void OnCollisionEnter(Collision collision)
     {
@@ -339,6 +358,9 @@ public class Child : MonoBehaviour
 
 	void Die()
 	{
+        PlayerWinsMenu menu = (PlayerWinsMenu)MenusHandler.MenusManager.Instance.ShowMenu("PlayerWinsMenu");
+        menu.SetPlayerIndex(this.Index);
+
 		Destroy(gameObject);
 	}
 

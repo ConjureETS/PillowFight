@@ -94,9 +94,11 @@ public class ChildController : MonoBehaviour
             }
         }
 
-        if (input.Ranges.ContainsKey("Throw")) {
+        if (input.Ranges.ContainsKey("Throw"))
             _child.Throw();
-        }
+
+		if (input.Ranges.ContainsKey("Hit"))
+			_child.Swing();
     }
 
     private void HandlePlayerButtons(MappedInput input)
