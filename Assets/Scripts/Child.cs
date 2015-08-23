@@ -15,6 +15,7 @@ public class Child : MonoBehaviour
     public Pillow pillow;
     public MomBehavior Mom;
 	public PlayerAvatar Avatar;
+    public Animator Animator;
 
     private Rigidbody _rb;
     private bool _isGrounded = false;
@@ -43,8 +44,7 @@ public class Child : MonoBehaviour
 			if (_numZ == 3) Die();
 		}
 	}
-
-	public int Index
+    public int Index
     {
         get { return _index; }
         set { _index = value; }
@@ -64,12 +64,14 @@ public class Child : MonoBehaviour
 	void Start()
 	{
 		Avatar.PlayerNum = Index + 1;
-	}
+    }
 
     void Update()
     {
-        _isGrounded = IsGrounded();
+        Animator.SetBool("IsOnBed", GetBed());
 
+        _isGrounded = IsGrounded();
+        Debug.Log(_isGrounded);
         // look at the target
         if (target != null) {
             transform.LookAt(target);
@@ -163,6 +165,8 @@ public class Child : MonoBehaviour
             _isGrounded = false;
 
             _rb.AddForce(new Vector3(0f, JumpForce, 0f));
+
+            Animator.SetTrigger("jump");
         }
     }
 
@@ -175,9 +179,7 @@ public class Child : MonoBehaviour
             _currentBed = bed;
             bed.Take();
             _isSleeping = true;
-
-            // Temporary (only for visual cue until we get the animation)
-            transform.localEulerAngles = new Vector3(90f, transform.localEulerAngles.y, transform.localEulerAngles.z);
+            Animator.SetBool("IsSleeping", true);
         }
 
         return _isSleeping;
@@ -186,13 +188,11 @@ public class Child : MonoBehaviour
     public void WakeUp()
     {
         _isSleeping = false;
+        Animator.SetBool("IsSleeping", false);
 
         _currentBed.Leave();
 
         _currentBed = null;
-
-        // Temporary (only for visual cue until we get the animation)
-        transform.localEulerAngles = new Vector3(0f, transform.localEulerAngles.y, transform.localEulerAngles.z);
     }
 
     private Bed GetBed()
@@ -233,6 +233,7 @@ public class Child : MonoBehaviour
             Debug.Log("Player " + _index + " entered lava. Lose one life.");
             TakeLavaDamage();
             ActivateVibration(true);
+            Animator.SetBool("IsOnLava", true);
         }
         else
         {
@@ -251,6 +252,7 @@ public class Child : MonoBehaviour
         if (collision.gameObject.tag == "Lava" || collision.gameObject.tag == "Floor")
         {
             ActivateVibration(false);
+            Animator.SetBool("IsOnLava", false);
         }
     }
 
