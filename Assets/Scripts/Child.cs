@@ -14,6 +14,7 @@ public class Child : MonoBehaviour
     public GameObject GroundCheck;
     public Pillow pillow;
     public MomBehavior Mom;
+	public PlayerAvatar Avatar;
 
     private Rigidbody _rb;
     private bool _isGrounded = false;
@@ -31,7 +32,19 @@ public class Child : MonoBehaviour
 
     private float _stunTime;
 
-    public int Index
+	private int _numZ = 0;
+	public int NumZ
+	{
+		get { return _numZ; }
+		set
+		{
+			_numZ = value;
+			Avatar.NumZ = _numZ;
+			if (_numZ == 3) Die();
+		}
+	}
+
+	public int Index
     {
         get { return _index; }
         set { _index = value; }
@@ -47,6 +60,11 @@ public class Child : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody>();
     }
+
+	void Start()
+	{
+		Avatar.PlayerNum = Index + 1;
+	}
 
     void Update()
     {
@@ -219,7 +237,7 @@ public class Child : MonoBehaviour
         else
         {
             // Setup for the next time the player falls on the lava
-            _invulnerableTime = MaxInvulnerableTime;
+            //_invulnerableTime = MaxInvulnerableTime;
 
             if (collision.gameObject.tag == "Floor")
             {
@@ -287,13 +305,19 @@ public class Child : MonoBehaviour
         XInputDotNetPure.GamePad.SetVibration((XInputDotNetPure.PlayerIndex)_index, intensity, intensity);
     }
 
-    private void TakeLavaDamage()
-    {
-        // TODO: Lose a life (probably) and become immune for ~ 2 or 3 seconds
-        _invulnerableTime = 0f;
-    }
+	private void TakeLavaDamage()
+	{
+		NumZ += 1;
+		// TODO: Lose a life (probably) and become immune for ~ 2 or 3 seconds
+		_invulnerableTime = 0f;
+	}
 
-    void OnDestroy()
+	void Die()
+	{
+		Destroy(gameObject);
+	}
+
+	void OnDestroy()
     {
         ActivateVibration(false);
     }
