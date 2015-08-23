@@ -116,6 +116,8 @@ public class MomBehavior : MonoBehaviour
         {
             if (child == null) continue;
 
+            Debug.Log(child.IsSleeping);
+
             if (child.IsSleeping)
             {
                 safeChildren.Add(child);
