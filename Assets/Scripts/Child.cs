@@ -13,6 +13,7 @@ public class Child : MonoBehaviour
     public GameObject GroundCheck;
     public Pillow pillow;
     public MomBehavior Mom;
+	public PlayerAvatar Avatar;
 
     private Rigidbody _rb;
     private bool _isGrounded = false;
@@ -25,6 +26,17 @@ public class Child : MonoBehaviour
 
     private int _index;
     private bool _isPushed = false;
+	private int _numZ = 0;
+	public int NumZ
+	{
+		get { return _numZ; }
+		set
+		{
+			_numZ = value;
+			Avatar.NumZ = _numZ;
+			if (_numZ == 3) Die();
+		}
+	}
 
     public int Index
     {
@@ -42,6 +54,11 @@ public class Child : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody>();
     }
+
+	void Start()
+	{
+		Avatar.PlayerNum = Index + 1;
+	}
 
     void Update()
     {
@@ -260,9 +277,15 @@ public class Child : MonoBehaviour
 
     private void TakeLavaDamage()
     {
+		NumZ += 1;
         // TODO: Lose a life (probably) and become immune for ~ 2 or 3 seconds
         _invulnerableTime = 0f;
     }
+
+	void Die()
+	{
+		Destroy(gameObject);
+	}
 
     void OnDestroy()
     {
