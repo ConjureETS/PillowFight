@@ -17,6 +17,9 @@ MonoBehaviour:
     - name: Jump
       XboxButtons: 00000000
       KeyboardKeys: 
+    - name: Hit
+      XboxButtons: 01000000
+      KeyboardKeys: 
     - name: Sleep
       XboxButtons: 02000000
       KeyboardKeys: 
