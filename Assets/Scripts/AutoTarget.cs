@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class AutoTarget : MonoBehaviour
 {
     private List<Transform> targets;
-    public float minAngleRange = 20f;
+    public float minAngleRange = 30f;
 
 	// Use this for initialization
 	void Start () 

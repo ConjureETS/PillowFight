@@ -25,7 +25,6 @@ public class Child : MonoBehaviour
     private bool _isSleeping;
     private float _invulnerableTime;
     private Bed _currentBed;
-    public Transform target;
     private bool _isInLava;
 
     private int _index;
@@ -46,6 +45,8 @@ public class Child : MonoBehaviour
 			if (_numZ == 3) Die();
 		}
 	}
+    private AutoTarget _autoTarget;
+
     public int Index
     {
         get { return _index; }
@@ -62,6 +63,8 @@ public class Child : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody>();
         AnimationPillow.SetActive(false);
+
+        _autoTarget = GetComponent<AutoTarget>();
     }
 
 	void Start()
@@ -74,11 +77,7 @@ public class Child : MonoBehaviour
         Animator.SetBool("IsOnBed", GetBed());
 
         _isGrounded = IsGrounded();
-        Debug.Log(_isGrounded);
-        // look at the target
-        if (target != null) {
-            transform.LookAt(target);
-        }
+        
 
         // We move the child depending on the camera orientation
 
@@ -118,7 +117,20 @@ public class Child : MonoBehaviour
 
     public void ThrowMecanimPillow()
     {
-        Vector3 direction = target == null ? direction = transform.forward : target.transform.position - pillow.transform.position;
+        if (pillow == null) return;
+
+		Transform target = _autoTarget.GetTarget(transform.forward);
+
+        Vector3 direction;
+
+        if (target != null)
+        {
+            direction = target.transform.position - pillow.transform.position;
+        }
+        else
+	    {
+            direction = transform.forward;
+	    }
 
         direction = direction.normalized;
 
@@ -132,6 +144,8 @@ public class Child : MonoBehaviour
 
         pillow.IsOwned = false;
 
+		target = null;
+
         pillow = null;
     }
 
@@ -140,9 +154,21 @@ public class Child : MonoBehaviour
 
             Pillow incomingPillow = other.GetComponent<Pillow>();
 
-            // picking up a pillow
-            if (this.pillow == null && incomingPillow.IsPickable) {
+            // getting hit by a pillow
+            if (incomingPillow.IsThrown) {
+                Debug.Log("abc");
+                if (incomingPillow.Owner != this)
+                {
+                    //player is hit
+                    Debug.Log("Child is hit by a pillow");
 
+                    Push(other.GetComponent<Rigidbody>().velocity.normalized * 10 * hitPushBackForce);
+                    Destroy(other.gameObject);
+                }
+            }
+            // picking up a pillow
+            else if (this.pillow == null && incomingPillow.IsPickable) {
+                Debug.Log("def");
                 pillow = incomingPillow;
 
                 pillow.transform.parent = transform; // make the pillow a child of Child
@@ -153,19 +179,6 @@ public class Child : MonoBehaviour
                 AnimationPillow.SetActive(true);
                 
                 // TODO: place the pillow correctly or animate or something...
-            }
-
-            // getting hit by a pillow
-            else if (incomingPillow.IsThrown) {
-
-                if (pillow.Owner != null && pillow.Owner != this)
-                {
-                    //player is hit
-                    Debug.Log("Child is hit by a pillow");
-
-                    Push(other.GetComponent<Rigidbody>().velocity.normalized * 10 * hitPushBackForce);
-                    Destroy(other.gameObject);
-                }
             }
         }
     }
@@ -229,7 +242,7 @@ public class Child : MonoBehaviour
         return colliders.Length > 0 ? colliders[0].GetComponent<Bed>() : null;
     }
 
-    internal void Throw() {
+    public void Throw() {
         if (_isInLava) return;
 
         if (pillow != null) {
@@ -272,11 +285,6 @@ public class Child : MonoBehaviour
 
     void OnCollisionStay(Collision collision)
     {
-        if (collision.gameObject.tag == "Walls")
-        {
-            Debug.Log(_isPushed);
-        }
-
         if (collision.gameObject.tag == "Lava")
         {
             _invulnerableTime += Time.deltaTime;
@@ -295,9 +303,10 @@ public class Child : MonoBehaviour
         }
         else if (_wasPushed && collision.gameObject.tag == "Walls")
         {
+            /*
             _wasPushed = false;
 
-            Push(Vector3.Reflect(_pushedDir.normalized, collision.contacts[0].normal) * _pushedDir.magnitude);
+            Push(Vector3.Reflect(_pushedDir.normalized, collision.contacts[0].normal) * _pushedDir.magnitude);*/
         }
     }
 

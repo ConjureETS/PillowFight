@@ -80,7 +80,10 @@ public class Pillow : MonoBehaviour {
 	}
 
     void OnCollisionEnter(Collision other) {
-        if (!IsPickable && !IsLost) {
+        Child child = other.gameObject.GetComponent<Child>();
+
+        if (!IsPickable && !IsLost && Owner == child)
+        {
             // on first collision, revert the pillow as pickable
             MakePickable();
         }
