@@ -4,8 +4,8 @@ using System.Collections;
 public class Floor : MonoBehaviour
 {
     public MomBehavior Mom;
-    public Material NormalMaterial;
-    public Material LavaMaterial;
+    public GameObject NormalFloor;
+    public GameObject LavaFloor;
 
     public MeshRenderer Renderer;
 
@@ -17,13 +17,15 @@ public class Floor : MonoBehaviour
 
     private void ChangeToNormalFloor()
     {
-        Renderer.material = NormalMaterial;
+        NormalFloor.SetActive(true);
+        LavaFloor.SetActive(false);
         gameObject.tag = "Floor"; // Might not be necessary since the player is most likely "dead" if he touches a non-lava floor
     }
 
     private void ChangeToLavaFloor()
     {
-        Renderer.material = LavaMaterial;
+        NormalFloor.SetActive(false);
+        LavaFloor.SetActive(true);
         gameObject.tag = "Lava"; // Might not be necessary since the player is most likely "dead" if he touches a non-lava floor
     }
 
