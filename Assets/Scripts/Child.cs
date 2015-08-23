@@ -116,6 +116,25 @@ public class Child : MonoBehaviour
         }
     }
 
+    public void ThrowMecanimPillow()
+    {
+        Vector3 direction = target == null ? direction = transform.forward : target.transform.position - pillow.transform.position;
+
+        direction = direction.normalized;
+
+        pillow.gameObject.SetActive(true);
+        pillow.transform.localPosition = new Vector3(0.109f, -0.407f, 0.389f);
+        pillow.transform.localEulerAngles = new Vector3(0f, 204.46f, 310.0002f);
+
+        AnimationPillow.SetActive(false);
+
+        pillow.Throw(direction * ThrowForce);
+
+        pillow.IsOwned = false;
+
+        pillow = null;
+    }
+
     void OnTriggerEnter(Collider other) {
         if (other.tag == "Pillow"){
 
@@ -127,9 +146,11 @@ public class Child : MonoBehaviour
                 pillow = incomingPillow;
 
                 pillow.transform.parent = transform; // make the pillow a child of Child
-                pillow.transform.localPosition = new Vector3(0f, 1.5f, 0f);
+                pillow.gameObject.SetActive(false);
                 pillow.GetComponent<Rigidbody>().isKinematic = true; // dont make pillow obey to gravity when in a child's hands
                 pillow.IsOwned = true;
+                pillow.Owner = this;
+                AnimationPillow.SetActive(true);
                 
                 // TODO: place the pillow correctly or animate or something...
             }
@@ -137,11 +158,14 @@ public class Child : MonoBehaviour
             // getting hit by a pillow
             else if (incomingPillow.IsThrown) {
 
-                //player is hit
-                Debug.Log("Child is hit by a pillow");
+                if (pillow.Owner != null && pillow.Owner != this)
+                {
+                    //player is hit
+                    Debug.Log("Child is hit by a pillow");
 
-                Push( other.GetComponent<Rigidbody>().velocity.normalized * 10  * hitPushBackForce);
-                Destroy(other.gameObject);
+                    Push(other.GetComponent<Rigidbody>().velocity.normalized * 10 * hitPushBackForce);
+                    Destroy(other.gameObject);
+                }
             }
         }
     }
@@ -209,24 +233,6 @@ public class Child : MonoBehaviour
         if (_isInLava) return;
 
         if (pillow != null) {
-
-            Vector3 direction;
-
-            if (target != null) {
-                direction = target.transform.position - pillow.transform.position;
-            }
-            else {
-                direction = transform.forward;
-            }
-            direction = direction.normalized;
-
-            
-            pillow.Throw(direction * ThrowForce);
-
-            pillow.IsOwned = false;
-
-            pillow = null;
-
             Animator.SetTrigger("StartAttack");
         }
     }

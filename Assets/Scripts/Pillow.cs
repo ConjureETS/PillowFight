@@ -31,6 +31,15 @@ public class Pillow : MonoBehaviour {
         }
     }
 
+    private Child _owner;
+
+    public Child Owner
+    {
+        get { return _owner; }
+        set { _owner = value; }
+    }
+
+
 	// Use this for initialization
 	void Start () {
         _col = GetComponent<Collider>();
