@@ -20,12 +20,12 @@ namespace InputHandler
 
         private MappedInput _currentFrameMappedInput;
 
-        public InputMapper(Dictionary<string, InputContext> contexts)
+        public InputMapper(Dictionary<string, InputContext> contexts, int playerIndex)
         {
             _contexts = contexts;
             _activeContexts = new Stack<InputContext>();
             _callbacks = new List<Action<MappedInput>>();
-            _currentFrameMappedInput = new MappedInput();
+            _currentFrameMappedInput = new MappedInput(playerIndex);
         }
 
         public void Dispatch()

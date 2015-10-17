@@ -1,22 +1,35 @@
 ﻿using UnityEngine;
 using System.Collections;
+using InputHandler;
+using MenusHandler;
 
-public class SimpleMenu : MonoBehaviour
+public class SimpleMenu : Menu
 {
 	public int NextLevel;
 
-	
-	// Update is called once per frame
-	void Update () {
-        if (Input.anyKeyDown) {
-            Application.LoadLevel(NextLevel);
+    private bool _loadingNextLevel = false;
+
+    void Start()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            InputManager.Instance.PushActiveContext("MainMenu", i);
+            InputManager.Instance.AddCallback(i, HandleMenuInput);
         }
-	}
+    }
 
-    IEnumerator AutoSkip() {
+    private void HandleMenuInput(MappedInput input)
+    {
+        if (this == null || _loadingNextLevel || !gameObject.activeSelf) return;
 
-        yield return new WaitForSeconds(5);
-        
-
+        if (input.Actions.Contains("PlayGame"))
+        {
+            Application.LoadLevel(NextLevel);
+            _loadingNextLevel = true;
+        }
+        else if (input.Actions.Contains("ShowCredits"))
+        {
+            MenusManager.Instance.ShowMenu("CreditsMenu");
+        }
     }
 }

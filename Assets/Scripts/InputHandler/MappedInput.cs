@@ -13,6 +13,18 @@ namespace InputHandler
         public HashSet<string> States = new HashSet<string>();
         public Dictionary<string, float> Ranges = new Dictionary<string, float>();
 
+        private int _playerIndex;
+
+        public int PlayerIndex
+        {
+            get { return _playerIndex; }
+        }
+
+        public MappedInput(int playerIndex)
+        {
+            _playerIndex = playerIndex;
+        }
+
         public void Clear()
         {
             Actions.Clear();

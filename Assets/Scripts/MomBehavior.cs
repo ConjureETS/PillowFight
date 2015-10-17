@@ -17,6 +17,7 @@ public class MomBehavior : MonoBehaviour
     public float WarningHeadsupTime = 5f;
     public float MotherStayTime = 2f;
     public Door RoomDoor;
+    public AudioSource MomEnterSound;
 
     public Child[] Children;
 
@@ -30,19 +31,53 @@ public class MomBehavior : MonoBehaviour
 
     private bool _gameOver = false;
 
+    private List<Child> _aliveChildren;
+
     public bool IsInRoom
     {
         get { return _currentState == State.InRoom; }
     }
 
+    private bool _startGame;
+
+    public bool StartGame
+    {
+        get { return _startGame; }
+        set { _startGame = value; }
+    }
+    
+
     void Awake()
     {
         _nextTriggerTime = GetNextTriggerTime();
+
+        _aliveChildren = new List<Child>();
+
+        foreach (Child child in Children)
+        {
+            child.OnDied += OnChildDied;
+            _aliveChildren.Add(child);
+        }
+    }
+
+    private void OnChildDied(Child child)
+    {
+        if (_gameOver) return;
+
+        _aliveChildren.Remove(child);
+        Destroy(child.gameObject);
+
+        if (_aliveChildren.Count == 1)
+        {
+            MusicManager.Instance.PlayVictoryMusic();
+
+            StartCoroutine("PlayerWins", child);
+        }
     }
 
     void Update()
     {
-        if (_gameOver) return;
+        if (_gameOver || !_startGame) return;
 
         // When the mom hasn't been triggered for a while, it can appear anytime between 2 borders
 
@@ -85,7 +120,12 @@ public class MomBehavior : MonoBehaviour
                 // Temporary
                 WarningText.gameObject.SetActive(true);
 
-                RoomDoor.Open();
+                RoomDoor.Open(MomEnterSound.Play);
+
+                if (OnEnterRoom != null)
+                {
+                    OnEnterRoom();
+                }
                 break;
             case State.InRoom:
                 // Temporary
@@ -94,10 +134,6 @@ public class MomBehavior : MonoBehaviour
 
                 _elapsedTime = 0f;
 
-                if (OnEnterRoom != null)
-                {
-                    OnEnterRoom();
-                }
                 break;
         }
 
@@ -110,6 +146,8 @@ public class MomBehavior : MonoBehaviour
 
     private void CheckIfSleeping()
     {
+        if (_gameOver) return;
+
         List<Child> safeChildren = new List<Child>();
 
         foreach (Child child in Children)
@@ -129,6 +167,7 @@ public class MomBehavior : MonoBehaviour
                 // TODO: Visual animation that the player lost (lasso?)
 
 				child.NumZ = 4;
+                _aliveChildren.Remove(child);
                 Destroy(child.gameObject);
             }
         }
@@ -137,23 +176,52 @@ public class MomBehavior : MonoBehaviour
         {
             Debug.Log("Mom wins!");
 
-            MenusManager.Instance.ShowMenu("MomWinsMenu");
+            MusicManager.Instance.PlayDefeatMusic();
+
+            StartCoroutine(MomWins());
 
             _gameOver = true;
         }
         else if (safeChildren.Count == 1)
         {
+            _gameOver = true;
+
             Debug.Log("Player " + safeChildren[0].Index + " wins!");
 
             PlayerWinsMenu menu = (PlayerWinsMenu)MenusManager.Instance.ShowMenu("PlayerWinsMenu");
             menu.SetPlayerIndex(safeChildren[0].Index);
 
+            MusicManager.Instance.PlayVictoryMusic();
+
             _gameOver = true;
         }
+    }
+
+    private IEnumerator MomWins()
+    {
+        yield return new WaitForSeconds(1.5f);
+
+        MenusManager.Instance.ShowMenu("MomWinsMenu");
+    }
+
+    private IEnumerator PlayerWins()
+    {
+        yield return new WaitForSeconds(1.5f);
+
+        PlayerWinsMenu menu = (PlayerWinsMenu)MenusHandler.MenusManager.Instance.ShowMenu("PlayerWinsMenu");
+        menu.SetPlayerIndex(_aliveChildren[0].Index);
     }
 
     private float GetNextTriggerTime()
     {
         return UnityEngine.Random.Range(MinTriggerTime, MaxTriggerTime);
+    }
+
+    void OnDestroy()
+    {
+        foreach (Child child in Children)
+        {
+            child.OnDied -= OnChildDied;
+        }
     }
 }

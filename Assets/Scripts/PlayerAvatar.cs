@@ -21,8 +21,8 @@ public class PlayerAvatar : MonoBehaviour {
 		{
 			_numZ = value;
 			_image.sprite = _sprites[_numZ];
-			if(_numZ == 3)
-				StartCoroutine(Die());
+            if (_numZ == 3)
+                Die();
 		}
 	}
 
@@ -62,9 +62,8 @@ public class PlayerAvatar : MonoBehaviour {
 	{
 	}
 
-	IEnumerator Die()
+	private void Die()
 	{
-		yield return new WaitForSeconds(1.2f);
 		NumZ = 4;
 	}
 

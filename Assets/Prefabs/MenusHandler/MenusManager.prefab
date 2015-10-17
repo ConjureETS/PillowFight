@@ -42,6 +42,8 @@ MonoBehaviour:
   Menus:
   - {fileID: 11469064, guid: 6a495bf58d4ebd442b25dfc40a98e481, type: 2}
   - {fileID: 11469064, guid: cf712c8a251107d4db1ded768a7e8d98, type: 2}
+  - {fileID: 11469064, guid: d9233c7e5b3031c4182df49c62f9836d, type: 2}
+  - {fileID: 11469064, guid: cab67c964aaf77f44a8c80e22bd92f41, type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Child : MonoBehaviour
@@ -18,6 +19,9 @@ public class Child : MonoBehaviour
 	public PlayerAvatar Avatar;
     public Animator Animator;
     public GameObject AnimationPillow;
+    public AudioSource ReceiveSound;
+
+    public Action<Child> OnDied;
 
     private Rigidbody _rb;
     private bool _isGrounded = false;
@@ -162,6 +166,11 @@ public class Child : MonoBehaviour
                 {
                     //player is hit
                     Debug.Log("Child is hit by a pillow");
+
+                    if (!ReceiveSound.isPlaying)
+                    {
+                        ReceiveSound.Play();
+                    }
 
                     Push(other.GetComponent<Rigidbody>().velocity.normalized * 10 * hitPushBackForce);
                     Destroy(other.gameObject);
@@ -358,10 +367,7 @@ public class Child : MonoBehaviour
 
 	void Die()
 	{
-        PlayerWinsMenu menu = (PlayerWinsMenu)MenusHandler.MenusManager.Instance.ShowMenu("PlayerWinsMenu");
-        menu.SetPlayerIndex(this.Index == 1 ? 2 : 1);
-
-		Destroy(gameObject);
+        OnDied(this);
 	}
 
 	void OnDestroy()

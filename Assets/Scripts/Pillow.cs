@@ -11,6 +11,8 @@ public class Pillow : MonoBehaviour {
     public bool IsPickable = true;
     public bool IsLost = false;
 
+    public AudioSource ThrowSound;
+
     private Collider _col;
     private Rigidbody _rb;
     private MeshRenderer _renderer;
@@ -96,7 +98,12 @@ public class Pillow : MonoBehaviour {
         transform.parent = null; // detach the pillow from the child object
 
         _rb.isKinematic = false;
-        
+
+        if (!ThrowSound.isPlaying)
+        {
+            ThrowSound.Play();
+        }
+
         _rb.AddForce(force, ForceMode.Impulse);
         _renderer.material.color = _defaultColor;
     }

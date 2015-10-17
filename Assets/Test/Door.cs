@@ -7,6 +7,7 @@ public class Door : MonoBehaviour
 	public float MaxAngle = 135f;
     public float OpenDuration = 5f;
     public float CloseDuration = 1f;
+    public AudioSource CloseSound;
 
     /*
 	// Update is called once per frame
@@ -19,12 +20,12 @@ public class Door : MonoBehaviour
 		transform.rotation = Quaternion.Euler(Vector3.up * curvature.Evaluate(state) * -angles);
 	}*/
 
-	public void Open()
+	public void Open(Action callback)
 	{
-        StartCoroutine(OpenDoor());
+        StartCoroutine("OpenDoor", callback);
 	}
 
-    private IEnumerator OpenDoor()
+    private IEnumerator OpenDoor(object callback)
     {
         Vector3 initialRot = transform.localEulerAngles;
         Vector3 finalRot = new Vector3(initialRot.x, initialRot.y - MaxAngle, initialRot.z);
@@ -38,6 +39,11 @@ public class Door : MonoBehaviour
             transform.localEulerAngles = Vector3.Lerp(initialRot, finalRot, ratio);
 
             yield return null;
+        }
+
+        if (callback != null)
+        {
+            ((Action)callback)();
         }
     }
 
@@ -61,6 +67,8 @@ public class Door : MonoBehaviour
 
             yield return null;
         }
+
+        CloseSound.Play();
 
         if (callback != null)
         {

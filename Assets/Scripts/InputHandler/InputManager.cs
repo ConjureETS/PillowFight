@@ -42,7 +42,7 @@ namespace InputHandler
 
                 for (int i = 0; i < MAX_PLAYER_COUNT; i++)
                 {
-                    _inputMappers[i] = new InputMapper(mappedContexts);
+                    _inputMappers[i] = new InputMapper(mappedContexts, i);
                 }
 
                 // Do the needed initial setup in the derived classes

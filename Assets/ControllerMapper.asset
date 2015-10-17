@@ -72,3 +72,16 @@ MonoBehaviour:
       Axis: 03000000
       KeyboardKeys: 
     ButtonStates: []
+  - name: MainMenu
+    ButtonActions:
+    - name: PlayGame
+      XboxButtons: 00000000
+      KeyboardKeys: 
+    - name: ShowCredits
+      XboxButtons: 02000000
+      KeyboardKeys: 
+    - name: BackCreditsMenu
+      XboxButtons: 01000000
+      KeyboardKeys: 
+    AxisRanges: []
+    ButtonStates: []
